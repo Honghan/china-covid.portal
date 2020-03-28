@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+Risk Prediction Model • china-covid.datahelps.life
+
+</title>
+<meta name="description" content=" Making avaialble insights from covid-19 datasets for saving lives">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#00f0ff">
+<meta name="msapplication-TileColor" content="#00f0ff">
+<meta name="msapplication-TileImage" content="/mstile-310x310.png">
+<!-- /icons -->
+
+<!-- og tags -->
+<meta property="og:site_name" content="china-covid.datahelps.life">
+<meta property="og:title" content="Risk Prediction Model • china-covid.datahelps.life">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="og:image" content="http://localhost:4000/img/og-image.jpg">
+  
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:4000/prediction/">
+<meta property="og:description" content="
+
+Making avaialble insights from covid-19 datasets for saving lives
+">
+<!-- /og tags -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+    
+      china-covid.datahelps.life
+    
+
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/prediction/">Interactive Models</a>
+  <a href="/data/">Data</a>
+</nav>
+
+
+  
+  
+</header>
+
+		<article>
+	<h1>Risk Prediction Model</h1>
+		<script>
+    function cal() {
+        alert("not implemented yet");
+        return false;
+    }
+</script>
+<div class="modelTitle">Logistic Regression Model learned from DS:Leishenshan</div>
+<div class="modelDesc">
+    N: 207; 10-fold validation results :- Specificity: .98, Sensitivity: .85 <br/>
+    For predicting severity: hospitalisation, ICU, death
+</div>
+<form onsubmit="return cal()">
+    <div class="sect">Demographic</div>
+    <input type="email" name="age" placeholder="age"/>
+    Sex: <input type="radio" name="Sex" value="male" id="male"> <label for="male">male</label>
+    <input type="radio" name="Sex" value="female" id="female">  <label for="female">female</label>
+
+    <div class="sect">Underline conditions</div>
+    <input type="checkbox" name="chronic_lung_disease" id="chronic_lung_disease"/> <label for="chronic_lung_disease">chronic lung disease </label><br/>
+    <input type="checkbox" name="diabetes_mellitus" id="diabetes_mellitus"/> <label for="diabetes_mellitus">diabetes mellitus</label><br/>
+    <input type="checkbox" name="immunocompromised" id="immunocompromised"/> <label for="immunocompromised">immunocompromised</label><br/>
+    <input type="checkbox" name="malignancy" id="malignancy"/> <label for="malignancy">malignancy</label><br/>
+    <input type="checkbox" name="hypertension" id="hypertension"/> <label for="hypertension">hypertension</label><br/>
+    <input type="checkbox" name="heart_disease" id="heart_disease"/> <label for="heart_disease">heart disease</label><br/>
+    <input type="checkbox" name="chronic_renal_disease" id="chronic_renal_disease"/> <label for="chronic_renal_disease">chronic renal disease</label><br/>
+
+    <div class="sect">Symptoms</div>
+    <input type="checkbox" name="coughing" id="coughing"/> <label for="coughing">coughing</label><br/>
+    <input type="checkbox" name="fatigue" id="fatigue"/> <label for="fatigue">fatigue</label><br/>
+    <input type="checkbox" name="dyspnea" id="dyspnea"/> <label for="dyspnea">dyspnea</label><br/>
+    <input type="checkbox" name="diarrhea" id="diarrhea"/> <label for="diarrhea">diarrhea</label><br/>
+
+    <div class="sect">Admission Labs</div>
+    <input type="email" name="Neutrophil" placeholder="Neutrophil"/>
+    <input type="email" name="Lymphocyte" placeholder="Lymphocyte"/>
+    <input type="email" name="Platelet" placeholder="Platelet"/>
+    <input type="email" name="Crp" placeholder="Crp"/>
+    <p/>
+    <input type="submit" value="Calculate">
+</form>
+
+
+
+
+</article>
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	<footer>
+  <div class="inner">
+    <p>Insights derived from COVID-19 Datasets</p>
+  </div>
+</footer>
+
+</body>
+</html>

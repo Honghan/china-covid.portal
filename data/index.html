@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+Data • china-covid.datahelps.life
+
+</title>
+<meta name="description" content=" Making avaialble insights from covid-19 datasets for saving lives">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#00f0ff">
+<meta name="msapplication-TileColor" content="#00f0ff">
+<meta name="msapplication-TileImage" content="/mstile-310x310.png">
+<!-- /icons -->
+
+<!-- og tags -->
+<meta property="og:site_name" content="china-covid.datahelps.life">
+<meta property="og:title" content="Data • china-covid.datahelps.life">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="og:image" content="http://localhost:4000/img/og-image.jpg">
+  
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:4000/data/">
+<meta property="og:description" content="
+
+Making avaialble insights from covid-19 datasets for saving lives
+">
+<!-- /og tags -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+    
+      china-covid.datahelps.life
+    
+
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/prediction/">Interactive Models</a>
+  <a href="/data/">Data</a>
+</nav>
+
+
+  
+  
+</header>
+
+		<article>
+	<h1>Data</h1>
+		<h2>Leishenshan Data</h2>
+<p/>
+<span class="meta">Mar 28, 2020</span>
+<div>
+    207 COVID-19 positive patients from Leishenshan Hospital, Wuhan, China. Most patients were under relatively severe conditions.
+    To summarise the data, we define a severity score as follows.
+    <figure class="highlight"><pre><code class="language-python" data-lang="python">    <span class="c1"># all variables are binary values except curb_65
+</span>    <span class="c1"># curb_65 is a score [0-5], see https://www.mdcalc.com/curb-65-score-pneumonia-severity#evidence
+</span>    <span class="n">severity_weights</span> <span class="o">=</span> <span class="p">{</span><span class="err"> </span>
+        <span class="s">"fever"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"coughing"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"fatigue"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"dyspnea"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"diarrhea"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"curb_65"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"oxygen_therapy"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"nppv"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"hfnc"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"intubation"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span><span class="err"> </span>
+        <span class="s">"ecmo"</span><span class="p">:</span> <span class="mi">8</span><span class="err"> </span><span class="p">,</span>
+        <span class="s">"death"</span><span class="p">:</span> <span class="mi">50</span>
+    <span class="p">}</span>
+
+    <span class="c1"># let row be a patient data row
+</span>    <span class="n">severity</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">severity_weights</span><span class="p">:</span>
+        <span class="n">severity</span> <span class="o">+=</span> <span class="n">severity_weights</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+    </code></pre></figure>
+    The following bubble chart summarises the data: Age group (Y axis) vs Severity (X axis).
+</div>
+<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<div class="content">
+    <div class="wrapper"><canvas id="chart-0"></canvas></div>
+</div>
+<script>
+    var DATA_COUNT = 16;
+    var MIN_XY = -150;
+    var MAX_XY = 100;
+
+    var utils = Samples.utils;
+    utils.srand(110);
+
+    var colorRange = ['#005DE5', '#0025E1', '#1000DD', '#4400D9', '#7600D5', '#A600D2', '#CE00C7', '#CA0093',
+    '#C60061', '#33C20030', '#33BF0001']
+
+    var ageSevrityGroups = {"90-59.5": 1, "65-78.0": 1, "75-60.0": 1, "60-63.0": 1, "60-62.5": 1, "25-64.0": 1, "70-76.5": 1, "60-83.5": 1, "50-71.5": 1, "65-76.5": 1, "80-65.0": 1, "75-64.5": 1, "85-60.0": 1, "65-71.5": 1, "65-70.0": 1, "60-13.0": 2, "85-14.5": 1, "55-13.5": 1, "15-6.5": 1, "35-7.0": 4, "60-7.0": 7, "55-5.5": 3, "45-0.0": 2, "50-6.5": 3, "55-7.0": 2, "65-7.5": 4, "85-7.5": 1, "65-7.0": 4, "60-6.0": 4, "60-1.0": 2, "70-2.5": 1, "55-2.0": 5, "40-1.0": 3, "65-8.0": 3, "55-0.5": 2, "50-7.0": 3, "60-0.5": 3, "60-2.0": 4, "55-1.5": 2, "70-20.5": 1, "60-6.5": 3, "75-8.0": 1, "35-5.5": 1, "55-6.0": 5, "50-6.0": 1, "70-14.0": 1, "35-6.0": 2, "70-7.5": 2, "75-9.0": 1, "60-1.5": 4, "40-6.5": 2, "65-6.0": 1, "55-1.0": 4, "50-5.5": 2, "35-1.5": 1, "40-7.0": 2, "55-6.5": 1, "40-14.0": 1, "45-2.0": 2, "60-5.5": 2, "40-6.0": 2, "20-0.0": 1, "50-1.0": 1, "25-6.0": 1, "40-0.5": 1, "50-7.5": 1, "30-1.5": 1, "40-1.5": 4, "60-7.5": 1, "50-2.0": 1, "65-3.0": 1, "65-2.0": 4, "70-3.0": 1, "25-0.0": 1, "70-2.0": 4, "15-6.0": 1, "50-5.0": 1, "45-6.5": 2, "75-7.5": 1, "70-13.0": 1, "50-13.5": 1, "65-2.5": 6, "40-0.0": 1, "45-0.5": 1, "50-0.0": 2, "65-1.0": 1, "50-13.0": 1, "45-1.5": 3, "80-2.5": 1, "85-3.5": 1, "60-20.0": 1, "60-12.5": 1, "25-13.0": 1, "55-11.5": 1, "90-50.0": 1, "70-8.5": 1, "60-69.5": 1, "70-70.0": 1, "75-70.0": 1, "70-77.5": 1, "60-12.0": 1, "55-12.5": 1, "65-14.0": 2, "85-27.0": 1, "85-14.0": 1, "65-13.5": 1, "75-21.0": 1, "80-13.5": 1, "65-50.5": 1, "75-7.0": 1, "65-1.5": 1, "75-6.0": 1, "70-7.0": 1, "75-56.5": 1, "60-51.0": 1, "45-51.0": 1, "75-50.0": 1, "80-51.0": 1, "55-50.0": 3, "0-50.0": 1, "60-50.0": 2, "45-50.0": 1};
+
+    function colorize(opaque, context) {
+        var value = context.dataset.data[context.dataIndex];
+        return colorRange[Math.min(10, parseInt(value.x / 10 - 1))] + '33';
+        // var x = value.x ;
+        // var y = value.y ;
+        // var r = x / 100;
+        // // var g = x < 0 && y < 0 ? 0 : x < 0 ? 50 : y < 0 ? 150 : 250;
+        // // var b = x < 0 && y < 0 ? 0 : x > 0 && y > 0 ? 250 : 150;
+        // var g = 100;
+        // var b = 100;
+        // var a = opaque ? 1 : 0.5 ;
+        //
+        // return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+
+    function render(){
+        var data = [];
+        for (var key in ageSevrityGroups){
+            var arr = key.split("-");
+            data.push({
+                x: parseFloat(arr[1]),
+                y: parseFloat(arr[0]),
+                v: ageSevrityGroups[key] * 150
+            });
+        }
+
+        var dataSet = {
+            datasets: [{
+                data: data
+            }]
+        };
+
+        var options = {
+            aspectRatio: 1,
+            legend: false,
+            tooltips: false,
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Severity (Death >50, ICU >5)'
+                    }
+                }],
+                yAxes: [{
+                    stacked: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Age'
+                    }
+                }]
+            },
+
+            tooltips: {
+                callbacks: {
+                    backgroundColor: function(tooltipItem, chart){
+                        return "#e7e8f0";
+                    },
+                    labelColor: function(tooltipItem, chart) {
+                        console.log(tooltipItem);
+                        return {
+                            borderColor: 'rgb(20,76,191)',
+                            backgroundColor: '#e7e8f0'
+                        };
+                    },
+                    labelTextColor: function(tooltipItem, chart) {
+                        return '#e7e8f0';
+                    },
+                    label: function(tooltipItem, chart) {
+                        var dataItem = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        return "age group:" + dataItem.y + ", severity:" + dataItem.x + "; #patients:" + dataItem.v / 150;
+                    }
+                }
+            },
+
+            elements: {
+                point: {
+                    backgroundColor: colorize.bind(null, false),
+
+                    borderColor: colorize.bind(null, true),
+
+                    borderWidth: function(context) {
+                        return Math.min(Math.max(1, context.datasetIndex + 1), 8);
+                    },
+
+                    hoverBackgroundColor: 'transparent',
+
+                    hoverBorderColor: function(context) {
+                        return utils.color(context.datasetIndex);
+                    },
+
+                    hoverBorderWidth: function(context) {
+                        var value = context.dataset.data[context.dataIndex];
+                        return Math.round(8 * value.v / 1000);
+                    },
+
+                    radius: function(context) {
+                        var value = context.dataset.data[context.dataIndex];
+                        var size = context.chart.width;
+                        var base = Math.abs(value.v) / 1000;
+                        return (size / 24) * base;
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart('chart-0', {
+            type: 'bubble',
+            data: dataSet,
+            options: options
+        });
+    }
+
+    render();
+</script>
+</article>
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	<footer>
+  <div class="inner">
+    <p>Insights derived from COVID-19 Datasets</p>
+  </div>
+</footer>
+
+</body>
+</html>
