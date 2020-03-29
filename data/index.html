@@ -99,7 +99,10 @@ header::after {
 <span class="meta">Mar 28, 2020</span>
 <div>
     207 COVID-19 positive patients from Leishenshan Hospital, Wuhan, China. Most patients were under relatively severe conditions.
-    To summarise the data, we define a severity score as follows.
+
+    <div class="sect">Age vs Severity Plot</div>
+    We define a severity score as follows. This scale is centralised at <a href="https://www.mdcalc.com/curb-65-score-pneumonia-severity">CURB 65 Score for Pneumonia Severity</a>.
+    Key thresholds: ICU > 5, Death >= 50.
     <figure class="highlight"><pre><code class="language-python" data-lang="python">    <span class="c1"># severity score is sum of the following
 </span>    <span class="n">has</span> <span class="n">fever</span><span class="p">:</span>		<span class="mf">0.5</span>
     <span class="n">has</span> <span class="n">coughing</span><span class="p">:</span>	<span class="mf">0.5</span>
@@ -120,6 +123,11 @@ header::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <div class="content">
     <div class="wrapper"><canvas id="chart-0"></canvas></div>
+</div>
+
+<div class="sect">Odds Ratios of underlying conditions</div>
+<div id="container">
+    <canvas id="canvas"></canvas>
 </div>
 <script>
     var DATA_COUNT = 16;
@@ -247,6 +255,55 @@ header::after {
     }
 
     render();
+
+    /*odds ratio*/
+    var conditions = ["chronic_lung_disease", "chronic_renal_disease", "diabetes_mellitus", "heart_disease", "hypertension", "immunocompromised", "malignancy"];
+    var color = Chart.helpers.color;
+    var horizontalBarChartData = {
+        labels: ["chronic_lung_disease", "chronic_renal_disease", "diabetes_mellitus", "heart_disease", "hypertension", "immunocompromised", "malignancy"],
+        datasets: [{
+            label: 'OR',
+            fill: false,
+            pointRadius: 10,
+            pointHoverRadius: 15,
+            showLine: false, // no line shown
+            backgroundColor: window.chartColors.red,
+            borderColor: window.chartColors.red,
+            // backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+            // borderColor: window.chartColors.red,
+            // borderWidth: 1,
+            data: [7.9523809523809500, 4.742857142857140, 3.1041666666666700, 6.703030303030300, 1.9137254901960800, 4.2, 2.578125]
+        }]
+
+    };
+
+    window.onload = function() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myHorizontalBar = new Chart(ctx, {
+            type: 'line',
+            data: horizontalBarChartData,
+            options: {
+                // Elements options apply to all of the options unless overridden in a dataset
+                // In this case, we are setting the border of each horizontal bar to be 2px wide
+                elements: {
+                    point: {
+                        pointStyle: "rect"
+                    }
+                },
+                responsive: true,
+                legend: {
+                    position: 'right',
+                },
+                title: {
+                    display: true,
+                    text: 'Odds Ratio of underlying Conditions'
+                }
+            }
+        });
+
+    };
+
+
 </script>
 </article>
 
