@@ -100,29 +100,21 @@ header::after {
 <div>
     207 COVID-19 positive patients from Leishenshan Hospital, Wuhan, China. Most patients were under relatively severe conditions.
     To summarise the data, we define a severity score as follows.
-    <figure class="highlight"><pre><code class="language-python" data-lang="python">    <span class="c1"># all variables are binary values except curb_65
-</span>    <span class="c1"># curb_65 is a score [0-5], see https://www.mdcalc.com/curb-65-score-pneumonia-severity#evidence
-</span>    <span class="n">severity_weights</span> <span class="o">=</span> <span class="p">{</span><span class="err"> </span>
-        <span class="s">"fever"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"coughing"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"fatigue"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"dyspnea"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"diarrhea"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"curb_65"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"oxygen_therapy"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"nppv"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"hfnc"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"intubation"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span><span class="err"> </span>
-        <span class="s">"ecmo"</span><span class="p">:</span> <span class="mi">8</span><span class="err"> </span><span class="p">,</span>
-        <span class="s">"death"</span><span class="p">:</span> <span class="mi">50</span>
-    <span class="p">}</span>
-
-    <span class="c1"># let row be a patient data row
-</span>    <span class="n">severity</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">severity_weights</span><span class="p">:</span>
-        <span class="n">severity</span> <span class="o">+=</span> <span class="n">severity_weights</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+    <figure class="highlight"><pre><code class="language-python" data-lang="python">    <span class="c1"># severity score is sum of the following
+</span>    <span class="n">has</span> <span class="n">fever</span><span class="p">:</span>		<span class="mf">0.5</span>
+    <span class="n">has</span> <span class="n">coughing</span><span class="p">:</span>	<span class="mf">0.5</span>
+    <span class="n">has</span> <span class="n">fatigue</span><span class="p">:</span>	<span class="mf">0.5</span>
+    <span class="n">has</span> <span class="n">dyspnea</span><span class="p">:</span>	<span class="mf">0.5</span>
+    <span class="n">has</span> <span class="n">diarrhea</span><span class="p">:</span>	<span class="mf">0.5</span>
+    <span class="n">curb_65</span><span class="p">:</span>		<span class="n">score</span>
+    <span class="n">has</span> <span class="n">oxygen_therapy</span><span class="p">:</span>	<span class="mi">5</span>
+    <span class="n">has</span> <span class="n">nppv</span><span class="p">:</span>		<span class="mi">6</span>
+    <span class="n">has</span> <span class="n">hfnc</span><span class="p">:</span>		<span class="mi">6</span>
+    <span class="n">has</span> <span class="n">intubation</span><span class="p">:</span>	<span class="mi">7</span>
+    <span class="n">has</span> <span class="n">ecmo</span><span class="p">:</span>		<span class="mi">8</span>
+    <span class="n">has</span> <span class="n">death</span><span class="p">:</span>		<span class="mi">50</span>
     </code></pre></figure>
-    The following bubble chart summarises the data: Age group (Y axis) vs Severity (X axis).
+    The following bubble chart plots Age group (5 year buckets, Y axis) vs Severity (X axis).
 </div>
 <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
