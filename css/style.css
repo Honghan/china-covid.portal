@@ -289,6 +289,7 @@ a.read-more {
   font-weight: 600;
 }
 input[type="email"],
+input[type="number"],
 textarea {
   font: inherit;
   display: block;
@@ -299,7 +300,8 @@ textarea {
   width: 100%;
   box-sizing: border-box;
 }
-input[type="submit"] {
+input[type="submit"],
+input[type="button"] {
   font-family: "Source Sans Pro", Verdana, sans-serif;
   font-size: inherit;
   font-weight: 600;
@@ -524,4 +526,18 @@ div.sect{
   margin-bottom: 10px;
   font-size: 120%;
   border-bottom: 1px solid rgba(47, 95, 107, .4);
+}
+
+.predictionResult{
+  margin-top: 10px;
+  padding: 30px;
+  font-size: 120%;
+}
+.predictionResult.predicted{
+  background: beige;
+}
+.caution{
+  background-color: #c95d3c;
+  padding: 10px;
+  color: bisque;
 }
