@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width">
 <title>
 
-Data • china-covid.datahelps.life
+Data • covid.datahelps.life
 
 </title>
-<meta name="description" content=" Derive insights from China covid-19 datasets for saving lives">
+<meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
 <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
 
 <!-- icons -->
@@ -21,20 +21,8 @@ Data • china-covid.datahelps.life
 <meta name="msapplication-TileImage" content="/mstile-310x310.png">
 <!-- /icons -->
 
-<!-- og tags -->
-<meta property="og:site_name" content="china-covid.datahelps.life">
-<meta property="og:title" content="Data • china-covid.datahelps.life">
-<meta property="og:locale" content="en">
 
-  
-    <meta property="og:image" content="http://localhost:4000/img/og-image.jpg">
-  
-
-<meta property="og:type" content="website">
-<meta property="og:url" content="http://localhost:4000/data/">
-<meta property="og:description" content="
-
-Derive insights from China covid-19 datasets for saving lives
+Derive insights from covid-19 datasets for saving lives
 ">
 <!-- /og tags -->
 
@@ -77,7 +65,7 @@ header::after {
 		<header>
   <a href="/" class="website-title">
     
-      china-covid.datahelps.life
+      covid.datahelps.life
     
 
   </a>
@@ -260,7 +248,8 @@ header::after {
     var conditions = ["chronic_lung_disease", "chronic_renal_disease", "diabetes_mellitus", "heart_disease", "hypertension", "immunocompromised", "malignancy"];
     var color = Chart.helpers.color;
     var horizontalBarChartData = {
-        labels: ["chronic_lung_disease", "chronic_renal_disease", "diabetes_mellitus", "heart_disease", "hypertension", "immunocompromised", "malignancy"],
+        labels: ["chronic_lung_disease (p-value:0.0045)", "chronic_renal_disease (p-value:0.0833)", "diabetes_mellitus (p-value:0.0689)",
+            "heart_disease (p-value:0.0006)", "hypertension (p-value:0.2985)", "immunocompromised (p-value:0.2680)", "malignancy (p-value:0.5353)"],
         datasets: [{
             label: 'OR',
             fill: false,
@@ -272,7 +261,7 @@ header::after {
             // backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
             // borderColor: window.chartColors.red,
             // borderWidth: 1,
-            data: [7.9523809523809500, 4.742857142857140, 3.1041666666666700, 6.703030303030300, 1.9137254901960800, 4.2, 2.578125]
+            data: [7.952, 4.743, 3.104, 6.703, 1.914, 4.2, 2.578]
         }]
 
     };
@@ -280,7 +269,7 @@ header::after {
     window.onload = function() {
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myHorizontalBar = new Chart(ctx, {
-            type: 'line',
+                type: 'line',
             data: horizontalBarChartData,
             options: {
                 // Elements options apply to all of the options unless overridden in a dataset
@@ -292,7 +281,7 @@ header::after {
                 },
                 responsive: true,
                 legend: {
-                    position: 'right',
+                    display: false
                 },
                 title: {
                     display: true,
