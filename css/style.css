@@ -537,6 +537,7 @@ div.sect{
   background: beige;
 }
 .caution{
+  margin-top: 20px;
   background-color: #c95d3c;
   padding: 10px;
   color: bisque;

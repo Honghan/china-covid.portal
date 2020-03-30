@@ -66,7 +66,7 @@ header::after {
   </a>
   <nav>
   <a href="/about/">About</a>
-  <a href="/prediction/">Interactive Models</a>
+  <a href="/prediction/">Prediction tools</a>
   <a href="/data/">Data</a>
 </nav>
 
@@ -110,8 +110,8 @@ header::after {
     function cal() {
         $('.predictionResult').html('');
         $('.predictionResult').removeClass('predicted');
-        if ($("input[name='age']").val().trim() == ""){
-            alert("Please input age");
+        if ($("input[name='age']").val().trim() == "" || parseInt($("input[name='age']").val()) > 150 || parseInt($("input[name='age']").val()) < 0){
+            alert("Please input correct age ([0-150]!");
             return false;
         }
         var data = {
@@ -150,12 +150,14 @@ header::after {
         });
     });
 </script>
-<div class="modelTitle">Logistic Regression Model learned from DS:Leishenshan</div>
-<div class="caution">CAUTION: the model was learnt on clinical data of a very small number of severe patients</div>
+<div class="modelTitle">Logistic Regression Model learned from <a href="/data">DS:Leishenshan</a></div>
+<div class="caution">CAUTION: the model was learnt on clinical data from a very small number of patients with relatively severe conditions
+</div>
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w">    </span><span class="c1"># model details</span><span class="w">
     </span><span class="n">N</span><span class="o">:</span><span class="w"> </span><span class="m">207</span><span class="w">
     </span><span class="n">Model</span><span class="o">:</span><span class="w"> </span><span class="n">Logistic</span><span class="w"> </span><span class="n">Regression</span><span class="w"> </span><span class="n">model</span><span class="w">
-    </span><span class="n">Outcome</span><span class="o">:</span><span class="w"> </span><span class="n">mortality</span></code></pre></figure>
+    </span><span class="n">Outcome</span><span class="o">:</span><span class="w"> </span><span class="n">mortality</span><span class="w">
+    </span><span class="n">Known</span><span class="w"> </span><span class="n">issue</span><span class="o">:</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">higher</span><span class="w"> </span><span class="n">specificity</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">lower</span><span class="w"> </span><span class="n">sensitivity</span></code></pre></figure>
 <form onsubmit="return cal()" id="dataFrm">
     <div class="sect">Demographic</div>
     <input type="number" name="age" placeholder="age"/>
