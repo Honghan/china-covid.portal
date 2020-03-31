@@ -542,3 +542,9 @@ div.sect{
   padding: 10px;
   color: bisque;
 }
+.imgcredit{
+  font-size: 60%;
+  font-style: italic;
+  margin-top: 3px;
+  margin-bottom: 20px;
+}
