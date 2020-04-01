@@ -21,7 +21,7 @@ COVID-19 Prediction Model(s) • covid.datahelps.life
 <meta name="msapplication-TileImage" content="/mstile-310x310.png">
 <!-- /icons -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/jquery.2.1.4.min.js"></script>
 <script src="/js/modernizr.js"></script>
 <script src="/js/fitvids.js"></script>
 <link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
@@ -69,15 +69,6 @@ header::after {
   <a href="/data/">Data</a>
 </nav>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-72059605-2"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-72059605-2');
-</script>
   
   
 </header>
@@ -85,6 +76,38 @@ header::after {
 		<article>
 	<h1>COVID-19 Prediction Model(s)</h1>
 		<script>
+    var full_feature_set = {
+        "age": "value",
+        "male": "binary",
+        "diabetes_mellitus": "binary",
+        "chronic_lung_disease": "binary",
+        "immunocompromised": "binary",
+        "malignancy": "binary",
+        "hypertension": "binary",
+        "heart_disease": "binary",
+        "chronic_renal_disease": "binary",
+        "fever": "binary",
+        "coughing": "binary",
+        "fatigue": "binary",
+        "dyspnea": "binary",
+        "diarrhea": "binary",
+        "curb": "value",
+        "days_in_disease_at_admission": "value",
+        "neutrophil_1": "value",
+        "lymphocyte_1": "value",
+        "platelet_1": "value",
+        "crp_1": "value",
+        "creatinine": "value",
+        "alt": "value"
+    };
+
+    var feature_group = {
+        "Demographic": ["age", "male"],
+        "Underlying conditions": ["diabetes_mellitus", "chronic_lung_disease", "immunocompromised", "malignancy", "hypertension", "heart_disease", "chronic_renal_disease"],
+        "Symptoms": ["fever", "coughing", "fatigue", "dyspnea", "diarrhea"],
+        "Admission clinical features": ["curb", "days_in_disease_at_admission", "number_pre_existing_condition", "neutrophil_1", "lymphocyte_1", "platelet_1", "crp_1", "creatinine", "alt"],
+    };
+
     var model_30032020_lss = {
         "b0": -6.8563498344027100,
         "b1": {
@@ -214,7 +237,17 @@ header::after {
 	  	});
 	  </script>
 	</div>
-	<footer>
+	
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-72059605-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72059605-2');
+</script>
+<footer>
   <div class="inner">
     <p>Insights derived from COVID-19 Datasets</p>
   </div>
