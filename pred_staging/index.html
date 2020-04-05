@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+COVID-19 Prediction Model(s) • covid.datahelps.life
+
+</title>
+<meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#515675">
+<meta name="msapplication-TileColor" content="#515675">
+<meta name="msapplication-TileImage" content="/mstile-310x310.png">
+<!-- /icons -->
+
+<script src="/js/jquery.2.1.4.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+    
+      covid.datahelps.life
+    
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/prediction/">Prediction tools</a>
+  <a href="/data/">Data</a>
+</nav>
+
+  
+  
+</header>
+
+		<article>
+	<h1>COVID-19 Prediction Model(s)</h1>
+		<script src="/js/api.js"></script>
+
+<script src="/js/libs/jquery.json-2.3.js"></script>
+
+<script>
+    var dsName = 'sampleDSModels';
+
+    function cal() {
+        $('.predictionResult').html('');
+        $('.predictionResult').removeClass('predicted');
+        if ($("input[name='age']").val().trim() == "" || parseInt($("input[name='age']").val()) > 150 || parseInt($("input[name='age']").val()) < 0){
+            alert("Please input correct age ([0-150]!");
+            return false;
+        }
+        var modelId = $('#modelList').val();
+        var m = id2model[modelId];
+        var caseDetails = {};
+        for(var f in m.b1){
+            if (dsModels.fullFeatureSet[f] == 'value'){
+                caseDetails[f] = $("input[name='" + f + "']").val();
+            }else if (dsModels.fullFeatureSet[f] == 'binary'){
+                caseDetails[f] = "" + ($('#' + f).is(":checked")? 1 : 0);
+            }
+        }
+        qbb.inf.predict(dsName, modelId, $.toJSON(caseDetails), function (s) {
+            var prefix = 'results:';
+            if (s.startsWith(prefix)){
+                var p = parseFloat(s.substring(prefix.length));
+                $('.predictionResult').html('mortality probability: ' + p.toFixed(5));
+            }else{
+                $('.predictionResult').html('prediction error: [' + s + ']');
+            }
+
+            $('.predictionResult').addClass('predicted');
+            $('html, body').animate({
+                scrollTop: ($('.predictionResult').offset().top)
+            },500)
+        });
+    }
+
+    var dsModels = null;
+    var id2model = {};
+    function renderModelList(){
+        for(var i=0;i<dsModels.models.length;i++){
+            var m = dsModels.models[i];
+            var opt = document.createElement('option');
+            opt.value = m.id;
+            opt.text =  m.description;
+            $('#modelList').append(opt);
+            id2model[m.id] = m;
+        }
+        renderModel($('#modelList').val());
+    }
+
+    function renderFeature(feature){
+        if (feature in dsModels.fullFeatureSet){
+            var ft = dsModels.fullFeatureSet[feature];
+            if (ft == "binary"){
+                return '<input type="checkbox" name="' + feature + '" id="' + feature + '"/> <label for="' + feature + '">' + feature + '</label>';
+            }else if(ft == "value"){
+                return '<input type="number" name="' + feature + '" placeholder="' + feature + '"/>';
+            }
+        }
+    }
+
+    function renderModel(modelId){
+        if (modelId in id2model){
+            var m = id2model[modelId];
+            if (m.caution.length > 0){
+                $('#modelContainer').find('.caution').html('CAUTION: ' + m.caution).show();
+            }else{
+                $('#modelContainer').find('.caution').hide();
+            }
+
+            //code snip
+            var codeSnip = "\nModel ID: " + m.id + "\n";
+            codeSnip += "Predicted outcome: " + m.outcome + "\n";
+            codeSnip += "Performances: " + m.performances;
+            console.log(codeSnip);
+            $('#codeSnip').html(codeSnip);
+
+            //generate feature groups
+            var s = '';
+            for(var g in dsModels.featureGroups){
+                var gs = [];
+                for(var i=0;i<dsModels.featureGroups[g].length;i++){
+                    var feature = dsModels.featureGroups[g][i];
+                    if (feature in m.b1){
+                        gs.push(renderFeature(feature));
+                    }
+                }
+                if (gs.length > 0){
+                    s += '<div class="sect">' + g + '</div>';
+                    s += gs.join("<br/>");
+                }
+            }
+            $('#dataFrm').html(s);
+
+            $('#modelContainer').show();
+        }
+    }
+
+    $( document ).ready(function() {
+        $('#btnCal').click(function () {
+            cal();
+        });
+
+        qbb.inf.getModelList(dsName, function(s){
+            dsModels = $.parseJSON(s);
+            console.log(dsModels);
+            renderModelList();
+        });
+    });
+</script>
+
+<div class="modelTitle">Prediction Models learned from <a href="/data/Huoshenshan">data:Huoshenshan</a></div>
+<p><select id="modelList"></select></p>
+<div id="modelContainer">
+    <div class="caution"></div>
+    <figure class="highlight">
+        <pre>
+            <code class="language-python" data-lang="python" id="codeSnip">
+            </code>
+        </pre>
+    </figure>
+    <form onsubmit="return cal()" id="dataFrm">
+    </form>
+
+    <input type="button" value="Calculate" id="btnCal" />
+    <div class="predictionResult"></div>
+</div>
+
+
+</article>
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-72059605-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72059605-2');
+</script>
+<footer>
+  <div class="inner">
+    <p>Insights derived from COVID-19 Datasets</p>
+  </div>
+</footer>
+
+</body>
+</html>
