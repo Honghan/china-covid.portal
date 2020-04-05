@@ -75,7 +75,8 @@ header::after {
 
 		<article>
 	<h1>COVID-19 Prediction Model(s)</h1>
-		<script>
+		<script src="/js/api.js"></script>
+<script>
     var full_feature_set = {
         "age": "value",
         "male": "binary",
@@ -178,9 +179,13 @@ header::after {
         $('#btnCal').click(function () {
             cal();
         });
+
+        qbb.inf.getModelList("sampleDSModels", function(s){
+            console.log(s);
+        });
     });
 </script>
-<div class="modelTitle">Logistic Regression Model for COVID-19 learned from <a href="/data/Huoshenshan">data:Huoshenshan</a></div>
+<div class="modelTitle">Logistic Regression Model for COVID-19 learned from <a href="/data/Wuhan">data:Wuhan</a></div>
 <div class="caution">CAUTION: the model was learnt on clinical data from a very small number of patients with relatively severe conditions
 </div>
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w">    </span><span class="c1"># model details</span><span class="w">
