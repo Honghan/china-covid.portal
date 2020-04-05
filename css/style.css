@@ -294,7 +294,6 @@ textarea {
   font: inherit;
   display: block;
   border-radius: 4px;
-  margin-bottom: 30px;
   border: 1px solid rgba(0, 0, 0,.1);
   padding: 8px 15px;
   width: 100%;
@@ -547,4 +546,20 @@ div.sect{
   font-style: italic;
   margin-top: 3px;
   margin-bottom: 20px;
+}
+
+select{
+  font: inherit;
+  display: block;
+  border-radius: 4px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(0, 0, 0,.1);
+  padding: 8px 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#modelContainer{
+  display: none;
 }
