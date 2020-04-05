@@ -1,0 +1,89 @@
+{
+  "id": "data:Huoshenshan",
+  "url": "covid.datahelps.life/data/Huoshenshan",
+  "n": "600",
+  "description": "COVID-19 positive patients from Huoshenshan Hospital, Wuhan, China. Most patients were under relatively severe conditions.",
+  "fullFeatureSet": {
+    "age": "value",
+    "male": "binary",
+    "diabetes_mellitus": "binary",
+    "chronic_lung_disease": "binary",
+    "immunocompromised": "binary",
+    "malignancy": "binary",
+    "hypertension": "binary",
+    "heart_disease": "binary",
+    "chronic_renal_disease": "binary",
+    "fever": "binary",
+    "coughing": "binary",
+    "fatigue": "binary",
+    "dyspnea": "binary",
+    "diarrhea": "binary",
+    "curb": "value",
+    "days_in_disease_at_admission": "value",
+    "neutrophil_1": "value",
+    "lymphocyte_1": "value",
+    "platelet_1": "value",
+    "crp_1": "value",
+    "creatinine": "value",
+    "alt": "value"
+  },
+  "featureGroups": {
+    "Demographic": [
+      "age",
+      "male"
+    ],
+    "Underlying conditions": [
+      "diabetes_mellitus",
+      "chronic_lung_disease",
+      "immunocompromised",
+      "malignancy",
+      "hypertension",
+      "heart_disease",
+      "chronic_renal_disease"
+    ],
+    "Symptoms": [
+      "fever",
+      "coughing",
+      "fatigue",
+      "dyspnea",
+      "diarrhea"
+    ],
+    "Admission clinical features": [
+      "curb",
+      "days_in_disease_at_admission",
+      "number_pre_existing_condition",
+      "neutrophil_1",
+      "lymphocyte_1",
+      "platelet_1",
+      "crp_1",
+      "creatinine",
+      "alt"
+    ]
+  },
+  "models": [
+    {
+      "id": "mortality_basic_condition",
+      "caution": "the model was learnt on clinical data from a very small number of patients with relatively severe conditions",
+      "outcome": "death",
+      "description": "mortality prediction",
+      "performances": "Known issue: model has higher specificity and lower sensitivity",
+      "b0": -6.8563498344027100,
+      "b1": {
+        "age": 0.05753793150641020,
+        "male": 0.28369071702967800,
+        "diabetes_mellitus": 0.5172992661822400,
+        "chronic_lung_disease": 0.8579107366299130,
+        "immunocompromised": 0.89574063560346,
+        "malignancy": 0.2786531103946370,
+        "hypertension": -0.13319550928906300,
+        "heart_disease": 0.847628103023917,
+        "chronic_renal_disease": 0.49003957787237900,
+        "fever": -0.4430027223719780,
+        "coughing": 0.6040980606979770,
+        "fatigue": -0.3060898276639020,
+        "dyspnea": 0.703865300149534,
+        "diarrhea": -0.6515846281589120
+      }
+    }
+  ]
+}
