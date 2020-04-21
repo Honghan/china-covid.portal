@@ -82,6 +82,29 @@ header::after {
 <script>
     var dsName = 'sampleDSModels';
 
+    function validateFeatureValue(f, v){
+        var r = {"validated": true, "value": 0, "msg": ""}
+        if (f in dsModels.valueRanges){
+            var vr = dsModels.valueRanges[f];
+            if (v.length == 0){
+                if ("default" in vr){
+                    r.msg = "";
+                    r.validated = true;
+                }else{
+                    r.msg = "please input value for "+ f;
+                    r.validated = false;
+                }
+            }else{
+                var val = parseFloat(v);
+                if(val < vr.min || val > vr.max){
+                    r.msg = "value of " + f + " is out of range!";
+                    r.validated = false;
+                }
+            }
+        }
+        return r;
+    }
+
     function cal() {
         $('.predictionResult').html('');
         $('.predictionResult').removeClass('predicted');
@@ -92,13 +115,32 @@ header::after {
         var modelId = $('#modelList').val();
         var m = id2model[modelId];
         var caseDetails = {};
+        var countingFeatures = [];
         for(var f in m.b1){
+            if (("countedFeatures" in dsModels) && f in dsModels['countedFeatures']){
+                countingFeatures.push(f);
+                continue;
+            }
             if (dsModels.fullFeatureSet[f] == 'value'){
                 caseDetails[f] = $("input[name='" + f + "']").val();
+                var validRet = validateFeatureValue(f, caseDetails[f]);
+                if (!validRet.validated){
+                    alert(validRet.msg);
+                    return;
+                }
             }else if (dsModels.fullFeatureSet[f] == 'binary'){
                 caseDetails[f] = "" + ($('#' + f).is(":checked")? 1 : 0);
             }
         }
+        for(var j=0; j < countingFeatures.length; j++){
+            var cf = countingFeatures[j];
+            var counted = 0;
+            for(var i=0;i<dsModels['countedFeatures'][cf];i++){
+                counted += caseDetails[dsModels['countedFeatures'][cf][i]];
+            }
+            caseDetails[cf] = "" + counted;
+        }
+        console.log(caseDetails);
         qbb.inf.predict(dsName, modelId, $.toJSON(caseDetails), function (s) {
             var prefix = 'results:';
             if (s.startsWith(prefix)){
@@ -135,7 +177,16 @@ header::after {
             if (ft == "binary"){
                 return '<input type="checkbox" name="' + feature + '" id="' + feature + '"/> <label for="' + feature + '">' + feature + '</label>';
             }else if(ft == "value"){
-                return '<input type="number" name="' + feature + '" placeholder="' + feature + '"/>';
+                var label = feature;
+                var placeHolder = "";
+                if (feature in dsModels.valueRanges){
+                    if (("label" in dsModels.valueRanges[feature]) && dsModels.valueRanges[feature]["label"] != null)
+                        label = dsModels.valueRanges[feature]["label"];
+                    if ("unit" in dsModels.valueRanges[feature])
+                        label += " (" + dsModels.valueRanges[feature]["unit"] + ")";
+                    placeHolder = "[" + dsModels.valueRanges[feature]['min'] + " - " + dsModels.valueRanges[feature]['max'] + "]";
+                }
+                return '<label class="valueLabel">' + label + '</label> <input type="number" name="' + feature + '" placeholder="' + placeHolder + '"/>';
             }
         }
     }
@@ -163,7 +214,9 @@ header::after {
                 for(var i=0;i<dsModels.featureGroups[g].length;i++){
                     var feature = dsModels.featureGroups[g][i];
                     if (feature in m.b1){
-                        gs.push(renderFeature(feature));
+                        var fInput = renderFeature(feature);
+                        if (fInput)
+                            gs.push(fInput);
                     }
                 }
                 if (gs.length > 0){
@@ -187,10 +240,14 @@ header::after {
             console.log(dsModels);
             renderModelList();
         });
+
+        $('#modelList').change(function(){
+            renderModel($('#modelList').val());
+        });
     });
 </script>
 
-<div class="modelTitle">Prediction Models learned from <a href="/data/Huoshenshan">data:Huoshenshan</a></div>
+<div class="modelTitle">Prediction Models learned from <a href="/data/Wuhan">data:Wuhan</a></div>
 <p><select id="modelList"></select></p>
 <div id="modelContainer">
     <div class="caution"></div>

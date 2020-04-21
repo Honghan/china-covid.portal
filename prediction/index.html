@@ -76,66 +76,31 @@ header::after {
 		<article>
 	<h1>COVID-19 Prediction Model(s)</h1>
 		<script src="/js/api.js"></script>
+<script src="/js/libs/jquery.json-2.3.js"></script>
 <script>
-    var full_feature_set = {
-        "age": "value",
-        "male": "binary",
-        "diabetes_mellitus": "binary",
-        "chronic_lung_disease": "binary",
-        "immunocompromised": "binary",
-        "malignancy": "binary",
-        "hypertension": "binary",
-        "heart_disease": "binary",
-        "chronic_renal_disease": "binary",
-        "fever": "binary",
-        "coughing": "binary",
-        "fatigue": "binary",
-        "dyspnea": "binary",
-        "diarrhea": "binary",
-        "curb": "value",
-        "days_in_disease_at_admission": "value",
-        "neutrophil_1": "value",
-        "lymphocyte_1": "value",
-        "platelet_1": "value",
-        "crp_1": "value",
-        "creatinine": "value",
-        "alt": "value"
-    };
+    var dsName = 'sampleDSModels';
 
-    var feature_group = {
-        "Demographic": ["age", "male"],
-        "Underlying conditions": ["diabetes_mellitus", "chronic_lung_disease", "immunocompromised", "malignancy", "hypertension", "heart_disease", "chronic_renal_disease"],
-        "Symptoms": ["fever", "coughing", "fatigue", "dyspnea", "diarrhea"],
-        "Admission clinical features": ["curb", "days_in_disease_at_admission", "number_pre_existing_condition", "neutrophil_1", "lymphocyte_1", "platelet_1", "crp_1", "creatinine", "alt"],
-    };
-
-    var model_30032020_lss = {
-        "b0": -6.8563498344027100,
-        "b1": {
-            "age": 0.05753793150641020,
-            "male": 0.28369071702967800,
-            "diabetes_mellitus": 0.5172992661822400,
-            "chronic_lung_disease": 0.8579107366299130,
-            "immunocompromised": 0.89574063560346,
-            "malignancy": 0.2786531103946370,
-            "hypertension": -0.13319550928906300,
-            "heart_disease": 0.847628103023917,
-            "chronic_renal_disease": 0.49003957787237900,
-            "fever": -0.4430027223719780,
-            "coughing": 0.6040980606979770,
-            "fatigue": -0.3060898276639020,
-            "dyspnea": 0.703865300149534,
-            "diarrhea": -0.6515846281589120
+    function validateFeatureValue(f, v){
+        var r = {"validated": true, "value": 0, "msg": ""}
+        if (f in dsModels.valueRanges){
+            var vr = dsModels.valueRanges[f];
+            if (v.length == 0){
+                if ("default" in vr){
+                    r.msg = "";
+                    r.validated = true;
+                }else{
+                    r.msg = "please input value for "+ f;
+                    r.validated = false;
+                }
+            }else{
+                var val = parseFloat(v);
+                if(val < vr.min || val > vr.max){
+                    r.msg = "value of " + f + " is out of range!";
+                    r.validated = false;
+                }
+            }
         }
-    }
-    function logisticRegressionCal(b0, b1, X){
-        var sum = 0.0
-        for (var i=0;i<b1.length;i++){
-            sum += b1[i] * X[i];
-        }
-        var pv = b0 + sum;
-        console.log(pv);
-        return 1 / (1 + Math.exp(-pv))
+        return r;
     }
 
     function cal() {
@@ -145,86 +110,156 @@ header::after {
             alert("Please input correct age ([0-150]!");
             return false;
         }
-        var data = {
-            "age": parseInt($("input[name='age']").val()),
-            "male": $("input[name='Sex']:checked").val() == 'male' ? 1 : 0,
-            "diabetes_mellitus": $('#diabetes_mellitus').is(":checked")? 1 : 0,
-            "chronic_lung_disease": $('#chronic_lung_disease').is(":checked")? 1 : 0,
-            "immunocompromised": $('#immunocompromised').is(":checked")? 1 : 0,
-            "malignancy": $('#malignancy').is(":checked")? 1 : 0,
-            "hypertension": $('#hypertension').is(":checked")? 1 : 0,
-            "heart_disease": $('#heart_disease').is(":checked")? 1 : 0,
-            "chronic_renal_disease": $('#chronic_renal_disease').is(":checked")? 1 : 0,
-            "fever": $('#fever').is(":checked")? 1 : 0,
-            "coughing": $('#coughing').is(":checked")? 1 : 0,
-            "fatigue": $('#fatigue').is(":checked")? 1 : 0,
-            "dyspnea": $('#dyspnea').is(":checked")? 1 : 0,
-            "diarrhea": $('#diarrhea').is(":checked")? 1 : 0,
+        var modelId = $('#modelList').val();
+        var m = id2model[modelId];
+        var caseDetails = {};
+        var countingFeatures = [];
+        for(var f in m.b1){
+            if (("countedFeatures" in dsModels) && f in dsModels['countedFeatures']){
+                countingFeatures.push(f);
+                continue;
+            }
+            if (dsModels.fullFeatureSet[f] == 'value'){
+                caseDetails[f] = $("input[name='" + f + "']").val();
+                var validRet = validateFeatureValue(f, caseDetails[f]);
+                if (!validRet.validated){
+                    alert(validRet.msg);
+                    return;
+                }
+            }else if (dsModels.fullFeatureSet[f] == 'binary'){
+                caseDetails[f] = "" + ($('#' + f).is(":checked")? 1 : 0);
+            }
         }
-        var b1 = [];
-        var X = [];
-        for (var key in data){
-            X.push(data[key]);
-            b1.push(model_30032020_lss.b1[key]);
+        for(var j=0; j < countingFeatures.length; j++){
+            var cf = countingFeatures[j];
+            var counted = 0;
+            for(var i=0;i<dsModels['countedFeatures'][cf];i++){
+                counted += caseDetails[dsModels['countedFeatures'][cf][i]];
+            }
+            caseDetails[cf] = "" + counted;
         }
-        var p = logisticRegressionCal(model_30032020_lss.b0, b1, X);
-        $('.predictionResult').html('mortality probability: ' + p.toFixed(5));
-        $('.predictionResult').addClass('predicted');
-        $('html, body').animate({
-            scrollTop: ($('.predictionResult').offset().top)
-        },500)
-        return false;
+        console.log(caseDetails);
+        qbb.inf.predict(dsName, modelId, $.toJSON(caseDetails), function (s) {
+            var prefix = 'results:';
+            if (s.startsWith(prefix)){
+                var p = parseFloat(s.substring(prefix.length));
+                $('.predictionResult').html('mortality probability: ' + p.toFixed(5));
+            }else{
+                $('.predictionResult').html('prediction error: [' + s + ']');
+            }
+
+            $('.predictionResult').addClass('predicted');
+            $('html, body').animate({
+                scrollTop: ($('.predictionResult').offset().top)
+            },500)
+        });
     }
+
+    var dsModels = null;
+    var id2model = {};
+    function renderModelList(){
+        for(var i=0;i<dsModels.models.length;i++){
+            var m = dsModels.models[i];
+            var opt = document.createElement('option');
+            opt.value = m.id;
+            opt.text =  m.description;
+            $('#modelList').append(opt);
+            id2model[m.id] = m;
+        }
+        renderModel($('#modelList').val());
+    }
+
+    function renderFeature(feature){
+        if (feature in dsModels.fullFeatureSet){
+            var ft = dsModels.fullFeatureSet[feature];
+            if (ft == "binary"){
+                return '<input type="checkbox" name="' + feature + '" id="' + feature + '"/> <label for="' + feature + '">' + feature + '</label>';
+            }else if(ft == "value"){
+                var label = feature;
+                var placeHolder = "";
+                if (feature in dsModels.valueRanges){
+                    if (("label" in dsModels.valueRanges[feature]) && dsModels.valueRanges[feature]["label"] != null)
+                        label = dsModels.valueRanges[feature]["label"];
+                    if ("unit" in dsModels.valueRanges[feature])
+                        label += " (" + dsModels.valueRanges[feature]["unit"] + ")";
+                    placeHolder = "[" + dsModels.valueRanges[feature]['min'] + " - " + dsModels.valueRanges[feature]['max'] + "]";
+                }
+                return '<label class="valueLabel">' + label + '</label> <input type="number" name="' + feature + '" placeholder="' + placeHolder + '"/>';
+            }
+        }
+    }
+
+    function renderModel(modelId){
+        if (modelId in id2model){
+            var m = id2model[modelId];
+            if (m.caution.length > 0){
+                $('#modelContainer').find('.caution').html('CAUTION: ' + m.caution).show();
+            }else{
+                $('#modelContainer').find('.caution').hide();
+            }
+
+            //code snip
+            var codeSnip = "\nModel ID: " + m.id + "\n";
+            codeSnip += "Predicted outcome: " + m.outcome + "\n";
+            codeSnip += "Performances: " + m.performances;
+            console.log(codeSnip);
+            $('#codeSnip').html(codeSnip);
+
+            //generate feature groups
+            var s = '';
+            for(var g in dsModels.featureGroups){
+                var gs = [];
+                for(var i=0;i<dsModels.featureGroups[g].length;i++){
+                    var feature = dsModels.featureGroups[g][i];
+                    if (feature in m.b1){
+                        var fInput = renderFeature(feature);
+                        if (fInput)
+                            gs.push(fInput);
+                    }
+                }
+                if (gs.length > 0){
+                    s += '<div class="sect">' + g + '</div>';
+                    s += gs.join("<br/>");
+                }
+            }
+            $('#dataFrm').html(s);
+
+            $('#modelContainer').show();
+        }
+    }
+
     $( document ).ready(function() {
         $('#btnCal').click(function () {
             cal();
         });
 
-        qbb.inf.getModelList("sampleDSModels", function(s){
-            console.log(s);
+        qbb.inf.getModelList(dsName, function(s){
+            dsModels = $.parseJSON(s);
+            console.log(dsModels);
+            renderModelList();
+        });
+
+        $('#modelList').change(function(){
+            renderModel($('#modelList').val());
         });
     });
 </script>
-<div class="modelTitle">Logistic Regression Model for COVID-19 learned from <a href="/data/Wuhan">data:Wuhan</a></div>
-<div class="caution">CAUTION: the model was learnt on clinical data from a very small number of patients with relatively severe conditions
-</div>
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w">    </span><span class="c1"># model details</span><span class="w">
-    </span><span class="n">N</span><span class="o">:</span><span class="w"> </span><span class="m">207</span><span class="w">
-    </span><span class="n">Model</span><span class="o">:</span><span class="w"> </span><span class="n">Logistic</span><span class="w"> </span><span class="n">Regression</span><span class="w"> </span><span class="n">model</span><span class="w">
-    </span><span class="n">Outcome</span><span class="o">:</span><span class="w"> </span><span class="n">mortality</span><span class="w">
-    </span><span class="n">Known</span><span class="w"> </span><span class="n">issue</span><span class="o">:</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">higher</span><span class="w"> </span><span class="n">specificity</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">lower</span><span class="w"> </span><span class="n">sensitivity</span></code></pre></figure>
-<form onsubmit="return cal()" id="dataFrm">
-    <div class="sect">Demographic</div>
-    <input type="number" name="age" placeholder="age"/>
-    Sex: <input type="radio" name="Sex" value="male" id="male"> <label for="male">male</label>
-    <input type="radio" name="Sex" value="female" id="female" checked>  <label for="female">female</label>
+<div class="modelTitle">Prediction Models learned from <a href="/data/Wuhan">data:Wuhan</a></div>
+<select id="modelList"></select>
+<div id="modelContainer">
+    <div class="caution"></div>
+    <figure class="highlight">
+        <pre>
+            <code class="language-python" data-lang="python" id="codeSnip">
+            </code>
+        </pre>
+    </figure>
+    <form onsubmit="return cal()" id="dataFrm">
+    </form>
 
-    <div class="sect">Underlying conditions</div>
-    <input type="checkbox" name="chronic_lung_disease" id="chronic_lung_disease"/> <label for="chronic_lung_disease">chronic lung disease </label><br/>
-    <input type="checkbox" name="diabetes_mellitus" id="diabetes_mellitus"/> <label for="diabetes_mellitus">diabetes mellitus</label><br/>
-    <input type="checkbox" name="immunocompromised" id="immunocompromised"/> <label for="immunocompromised">immunocompromised</label><br/>
-    <input type="checkbox" name="malignancy" id="malignancy"/> <label for="malignancy">malignancy</label><br/>
-    <input type="checkbox" name="hypertension" id="hypertension"/> <label for="hypertension">hypertension</label><br/>
-    <input type="checkbox" name="heart_disease" id="heart_disease"/> <label for="heart_disease">heart disease</label><br/>
-    <input type="checkbox" name="chronic_renal_disease" id="chronic_renal_disease"/> <label for="chronic_renal_disease">chronic renal disease</label><br/>
-
-    <div class="sect">Symptoms</div>
-    <input type="checkbox" name="coughing" id="coughing"/> <label for="coughing">coughing</label><br/>
-    <input type="checkbox" name="fatigue" id="fatigue"/> <label for="fatigue">fatigue</label><br/>
-    <input type="checkbox" name="dyspnea" id="dyspnea"/> <label for="dyspnea">dyspnea</label><br/>
-    <input type="checkbox" name="diarrhea" id="diarrhea"/> <label for="diarrhea">diarrhea</label><br/>
-<!--
-    <div class="sect">Admission Labs</div>
-    <input type="email" name="Neutrophil" placeholder="Neutrophil"/>
-    <input type="email" name="Lymphocyte" placeholder="Lymphocyte"/>
-    <input type="email" name="Platelet" placeholder="Platelet"/>
-    <input type="email" name="Crp" placeholder="Crp"/>
--->
-    <p/>
     <input type="button" value="Calculate" id="btnCal">
     <div class="predictionResult"></div>
-</form>
-
+</div>
 
 
 
