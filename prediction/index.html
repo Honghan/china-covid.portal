@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width">
 <title>
 
-COVID-19 Prediction Model(s) • covid.datahelps.life
+COVID-19 Prediction • covid.datahelps.life
 
 </title>
 <meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
@@ -74,8 +74,8 @@ header::after {
 </header>
 
 		<article>
-	<h1>COVID-19 Prediction Model(s)</h1>
-		<script src="/js/api.js"></script>
+	<h1>COVID-19 Prediction</h1>
+		<script src="/js/api-local.js"></script>
 <script src="/js/libs/jquery.json-2.3.js"></script>
 <script>
     var dsName = 'sampleDSModels';
@@ -140,10 +140,21 @@ header::after {
         }
         console.log(caseDetails);
         qbb.inf.predict(dsName, modelId, $.toJSON(caseDetails), function (s) {
-            var prefix = 'results:';
-            if (s.startsWith(prefix)){
-                var p = parseFloat(s.substring(prefix.length));
-                $('.predictionResult').html('mortality probability: ' + p.toFixed(5));
+            if ("riskGroups" in s){
+                var groupLabels = ["Low risk", "High risk", "Very high risk"];
+                var predGroupIdx = -1;
+                $('#resultTemp').find('.predOutcome').html(s.outcome);
+                $('#resultTemp').find('.predOutcomeLabel').html(s.outcome == "death" ? "die" : "have a " + s.outcome);
+                for(var i=0;i<s.riskGroups.length;i++){
+                    var g = s.riskGroups[i];
+                    if (predGroupIdx == -1 && s.prob <= g["prob"]){
+                        $('#resultTemp').find('.predGroup').html(groupLabels[i]);
+                        $('#resultTemp').find('.predGroupPercent').html((g["risk_ratio"] * 100).toFixed(1));
+                        predGroupIdx = i;
+                    }
+                    $('#resultTemp').find('.predGroup' + i).html((g["risk_ratio"] * 100).toFixed(1));
+                }
+                $('.predictionResult').html($('#resultTemp').html());
             }else{
                 $('.predictionResult').html('prediction error: [' + s + ']');
             }
@@ -190,6 +201,12 @@ header::after {
     }
 
     function renderModel(modelId){
+        $('.predictionResult').html('');
+        $('.predictionResult').removeClass('predicted');
+        if (modelId == "-"){
+            $('#modelContainer').hide();
+            return;
+        }
         if (modelId in id2model){
             var m = id2model[modelId];
             if (m.caution.length > 0){
@@ -201,7 +218,7 @@ header::after {
             //code snip
             var codeSnip = "\nModel ID: " + m.id + "\n";
             codeSnip += "Predicted outcome: " + m.outcome + "\n";
-            codeSnip += "Performances: " + m.performances;
+            // codeSnip += "Performances: " + m.performances;
             console.log(codeSnip);
             $('#codeSnip').html(codeSnip);
 
@@ -224,6 +241,11 @@ header::after {
             }
             $('#dataFrm').html(s);
 
+            $("input").change(function() {
+                $('.predictionResult').html('');
+                $('.predictionResult').removeClass('predicted');
+            });
+
             $('#modelContainer').show();
         }
     }
@@ -234,7 +256,7 @@ header::after {
         });
 
         qbb.inf.getModelList(dsName, function(s){
-            dsModels = $.parseJSON(s);
+            dsModels = Object.prototype.toString.call(s) == '[object String]'  ? $.parseJSON(s) : s;
             console.log(dsModels);
             renderModelList();
         });
@@ -244,9 +266,23 @@ header::after {
         });
     });
 </script>
-<div class="modelTitle">Prediction Models learned from <a href="/data/Wuhan">data:Wuhan</a></div>
-<select id="modelList"></select>
+<div class="modelTitle">COVID-19 prediction models derived from <a href="/data/Wuhan">data:Wuhan</a></div>
+<div class="desc">
+The models are derived in a population of 775 people with confirmed COVID-19 admitted to one of two hospitals in Wuhan, China.
+The population is a low to moderate severity population 4.3% died and 9.7% had a ‘poor outcome’ defined as acute respiratory
+distress syndrome, intensive care unit admission, mechanical ventilation, extra-corporeal membrane oxygenation therapy or death).
+The models perform well in the original population.
+</div>
+
+<div class="caution">
+    NB: Risk prediction models are only ever a complement to clinical judgement. They are not a replacement.
+</div>
+
+<h3>Step 1:choose your model</h3>
+<select id="modelList"><option value="-">select a model</option></select>
+
 <div id="modelContainer">
+    <h3>Step 2:enter patient values</h3>
     <div class="caution"></div>
     <figure class="highlight">
         <pre>
@@ -259,6 +295,17 @@ header::after {
 
     <input type="button" value="Calculate" id="btnCal">
     <div class="predictionResult"></div>
+    <div style="display: none" id="resultTemp">
+        <span class="predGroupPercent"></span>% of patients with these characteristics are predicted to <span class="predOutcomeLabel"></span>.
+        <div class="explainText">
+        Based on the Wuhan derivation data, this patient would be categorised as <span class="predGroup"></span>. Interpret this with CAUTION – validity in other contexts has not been established.
+        <ol>
+            <li>Low risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup0"></span>%)</li>
+            <li>High risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup1"></span>%)</li>
+            <li>Very high risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup2"></span>%)</li>
+        </ol>
+        </div>
+    </div>
 </div>
 
 

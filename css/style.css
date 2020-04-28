@@ -540,18 +540,41 @@ div.sect{
 }
 
 .predictionResult{
+  line-height: 1.2;
   margin-top: 10px;
   padding: 30px;
   font-size: 120%;
 }
+.predictionResult span{
+  font-weight: bold;
+}
 .predictionResult.predicted{
   background: beige;
 }
+.predictionResult ol{
+  margin: 0px;
+}
+.predictionResult li{
+  margin: 10px;
+  line-height: 1.1;
+}
+.predictionResult .explainText{
+  font-size: 80%;
+  margin-top: 12px;
+}
 .caution{
   margin-top: 20px;
-  background-color: #c95d3c;
+  background-color: #983636;
   padding: 10px;
-  color: bisque;
+  line-height: 1.2;
+  color: #fbfbfb;
+}
+.caution ul{
+  margin: 0px;
+}
+.caution li{
+  margin: 10px;
+  line-height: 1.1;
 }
 .imgcredit{
   font-size: 60%;
@@ -580,4 +603,10 @@ select{
   margin-top: 6px;
   margin-bottom: 3px;
   display: inline-block;
+}
+
+.desc{
+  font-size:110%;
+  line-height: 1.4;
+  margin-top: 20px;
 }

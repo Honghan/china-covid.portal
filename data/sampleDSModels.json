@@ -1,0 +1,190 @@
+{
+  "id": "data:Huoshenshan",
+  "url": "covid.datahelps.life/data/Huoshenshan",
+  "n": "600",
+  "description": "COVID-19 positive patients from Huoshenshan Hospital, Wuhan, China. Most patients were under relatively severe conditions.",
+  "fullFeatureSet": {
+    "age": "value",
+    "male": "binary",
+    "diabetes_mellitus": "binary",
+    "chronic_lung_disease": "binary",
+    "immunocompromised": "binary",
+    "malignancy": "binary",
+    "hypertension": "binary",
+    "heart_disease": "binary",
+    "chronic_renal_disease": "binary",
+    "fever": "binary",
+    "coughing": "binary",
+    "fatigue": "binary",
+    "dyspnea": "binary",
+    "diarrhea": "binary",
+    "curb": "value",
+    "days_in_disease_at_admission": "value",
+    "neutrophil_1": "value",
+    "lymphocyte_1": "value",
+    "platelet_1": "value",
+    "crp_1": "value",
+    "creatinine": "value",
+    "alt": "value"
+  },
+  "valueRanges": {
+    "age": {"min": 0, "max":  100, "unit": "years", "label": "age"},
+    "curb": {"min": 0, "max":  5, "unit":  "score points", "label": "CURB-65 score"},
+    "days_in_disease_at_admission": {"min": 0, "max":  500, "unit":  "days", "label": "days in disease at admission"},
+    "neutrophil_1": {"min": 0, "max":  50, "unit":  "10^9/L", "label": "Neutrophil Count"},
+    "lymphocyte_1": {"min": 0, "max":  50, "unit":  "10^9/L", "label": "Lymphocyte Count"},
+    "platelet_1": {"min": 0, "max":  1000, "unit":  "10^9/L", "label": "Platelet Count (PLT)"},
+    "crp_1": {"min": 0, "max":  500, "unit":  "mg/L", "label": "C-reactive protein"},
+    "creatinine": {"min": 0, "max":  500, "unit":  "μmol/L", "label": "Creatinine"},
+    "alt": {"min": 0, "max": 1000, "unit":  "IU/L", "label": "ALT (Alanine Aminotransferase) "}
+  },
+  "featureGroups": {
+    "Demographic": [
+      "age",
+      "male"
+    ],
+    "Underlying conditions": [
+      "diabetes_mellitus",
+      "chronic_lung_disease",
+      "immunocompromised",
+      "malignancy",
+      "hypertension",
+      "heart_disease",
+      "chronic_renal_disease"
+    ],
+    "Symptoms": [
+      "fever",
+      "coughing",
+      "fatigue",
+      "dyspnea",
+      "diarrhea"
+    ],
+    "Admission clinical features": [
+      "curb",
+      "days_in_disease_at_admission",
+      "number_pre_existing_condition",
+      "neutrophil_1",
+      "lymphocyte_1",
+      "platelet_1",
+      "crp_1",
+      "creatinine",
+      "alt"
+    ]
+  },
+  "countedFeatures":{
+    "number_pre_existing_condition": ["diabetes_mellitus",
+      "chronic_lung_disease",
+      "immunocompromised",
+      "malignancy",
+      "hypertension",
+      "heart_disease",
+      "chronic_renal_disease"],
+    "number_symptoms": ["fever",
+      "coughing",
+      "fatigue",
+      "dyspnea",
+      "diarrhea"]
+  },
+  "models": [
+    {
+      "id": "poor_prognosis_basic_lab",
+      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed",
+      "outcome": "poor outcome",
+      "description": "Predicts ‘poor outcome’ using demographic and laboratory predictors",
+      "performances": "External validated - C-index: 0.72; PPV: 0.67; NPV: 0.65; Sensitivity: 0.40; Specificity: 0.85",
+      "b0": -4.18647223083293,
+      "b1": {
+        "age": 0.028050385361593000,
+        "male": -0.47233661391228900,
+        "neutrophil_1": 0.2574844681466300,
+        "lymphocyte_1": -1.1842127337721200,
+        "platelet_1": -0.0027195439705969800,
+        "crp_1": 0.00816281053953699,
+        "creatinine": 0.009871496462509580
+      },
+      "risk_groups": [
+        {"prob": 0.02993437521, "risk_ratio":  0.00625},
+        {"prob": 0.2750778385, "risk_ratio":  0.08928571429},
+        {"prob": 1, "risk_ratio":  0.5849056604}
+      ]
+    },
+    {
+      "id": "poor_prognosis_basic_condi_symp",
+      "caution": "This model has not been externally validated. External validation is needed.",
+      "outcome": "poor outcome",
+      "description": "Predicts ‘poor outcome’ using demographic, symptom and premorbid condition predictors",
+      "performances": "Internal validated - C-index: 0.80; PPV: 0.53; NPV: 0.91; Sensitivity: 0.09; Specificity: 0.99",
+      "b0": -6.299309347078160,
+      "b1": {
+        "age": 0.041358727329340300,
+        "male": 0.20504037654507900,
+        "diabetes_mellitus": 1.19131161079129E-17,
+        "chronic_lung_disease": 1.2284485791841800,
+        "immunocompromised": 1.4337993614935200,
+        "malignancy": 1.80798859301101E-17,
+        "hypertension": 0.6630957831052120,
+        "heart_disease": 0.7407706184275030,
+        "chronic_renal_disease": 0.9920000659514420,
+        "fever": 0.02801477299957950,
+        "coughing": -7.14497920597805E-17,
+        "fatigue": 0.09964692126782990,
+        "dyspnea": 1.0901668463710000,
+        "diarrhea": -0.20741399788247700
+      },
+      "risk_groups": [
+        {"prob": 0.05913713556, "risk_ratio":  0.0075},
+        {"prob": 0.3889423147, "risk_ratio":  0.1470588235},
+        {"prob": 1, "risk_ratio":  0.6785714286}
+      ]
+    },
+    {
+      "id": "death_basic_lab",
+      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed",
+      "outcome": "death",
+      "description": "Predicts ‘death’ using demographic and laboratory predictors",
+      "performances": "",
+      "b0": -3.5171797414982300,
+      "b1": {
+        "age": 0.014167387793235900,
+        "male": -0.8035276893373540,
+        "neutrophil_1": 0.22492640370932100,
+        "lymphocyte_1": -1.325469536230810,
+        "platelet_1": -0.005170283973649970,
+        "crp_1": 0.013773266684111900,
+        "creatinine": 0.0014728045166590600
+      },
+      "risk_groups": [
+        {"prob": 0.02993437521, "risk_ratio":  0.00625},
+        {"prob": 0.2750778385, "risk_ratio":  0.08928571429},
+        {"prob": 1, "risk_ratio":  0.5849056604}
+      ]
+    },
+    {
+      "id": "death_basic_condi_symp",
+      "caution": "This model has not been externally validated. External validation is needed.",
+      "outcome": "death",
+      "description": "Predicts ‘death’ using demographic, symptom and premorbid condition predictors",
+      "performances": "",
+      "b0": -8.501637245135510,
+      "b1": {
+        "age": 0.046064159738630900,
+        "male": 0.31769414063619500,
+        "diabetes_mellitus": 0.4448220155723570,
+        "chronic_lung_disease": 1.0974715209740000,
+        "immunocompromised": 1.3798003785370900,
+        "malignancy": 0.018548533959621700,
+        "hypertension": 0.34566668269722700,
+        "heart_disease": 0.6760826302271390,
+        "chronic_renal_disease": 1.320987893772740,
+        "coughing": 0.7408644722914940,
+        "dyspnea": 1.5245427030826800,
+        "diarrhea": 6.13889851605158E-17
+      },
+      "risk_groups": [
+        {"prob": 0.05913713556, "risk_ratio":  0.0075},
+        {"prob": 0.3889423147, "risk_ratio":  0.1470588235},
+        {"prob": 1, "risk_ratio":  0.6785714286}
+      ]
+    }
+  ]
+}
