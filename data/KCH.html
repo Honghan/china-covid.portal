@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+KCH Data • covid.datahelps.life
+
+</title>
+<meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#515675">
+<meta name="msapplication-TileColor" content="#515675">
+<meta name="msapplication-TileImage" content="/mstile-310x310.png">
+<!-- /icons -->
+
+<script src="/js/jquery.2.1.4.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+    
+      covid.datahelps.life
+    
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/prediction/">Prediction tools</a>
+  <a href="/data/">Data</a>
+</nav>
+
+  
+  
+</header>
+
+		<article>
+	<h1>KCH Data</h1>
+		<p>226 COVID-19 positive patients admitted to King’s College Hospital, London. 
+The analytics below show the baseline of the cohort.</p>
+
+<h3 id="characteristics-of-kch-cohort">Characteristics of KCH Cohort</h3>
+<p><em>Data are median (IQR) or number (%). 
+Two patients had missing data for death, three patients had missing data for poor outcome.</em></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>N (all)</th>
+      <th>All (n=775)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Demographic</strong></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Age</td>
+      <td>226</td>
+      <td>74 (59-85)</td>
+    </tr>
+    <tr>
+      <td>Sex (male)</td>
+      <td>226</td>
+      <td>124 (54·9%)</td>
+    </tr>
+    <tr>
+      <td><strong>Outcome</strong></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Death</td>
+      <td>226</td>
+      <td>77 (34·1%)</td>
+    </tr>
+    <tr>
+      <td>Poor outcome</td>
+      <td>226</td>
+      <td>97 (42·9%)</td>
+    </tr>
+    <tr>
+      <td><strong>Admission clinical features</strong></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Neutrophil count (10^9/L)</td>
+      <td>226</td>
+      <td>4·9 (3·4-6·9)</td>
+    </tr>
+    <tr>
+      <td>Lymphocyte (10^9/L)</td>
+      <td>226</td>
+      <td>1·1 (0·7-1·6)</td>
+    </tr>
+    <tr>
+      <td>Platelet (10^9/L)</td>
+      <td>226</td>
+      <td>211 (160-284)</td>
+    </tr>
+    <tr>
+      <td>C-reactive protein (mg/L)</td>
+      <td>226</td>
+      <td>56·0 (21·1-115·5)</td>
+    </tr>
+    <tr>
+      <td>Creatinine (μmol/L)</td>
+      <td>226</td>
+      <td>90·0 (68·0-126·0)</td>
+    </tr>
+  </tbody>
+</table>
+
+</article>
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-72059605-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72059605-2');
+</script>
+<footer>
+  <div class="inner">
+    <p>Insights derived from COVID-19 Datasets</p>
+  </div>
+</footer>
+
+</body>
+</html>
