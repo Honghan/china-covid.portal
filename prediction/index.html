@@ -148,7 +148,7 @@ header::after {
                 var outcomeLabel = s.outcome;
                 if (s.outcome != "death")
                     outcomeLabel = "poor outcome";
-                $('#resultTemp').find('.predOutcome').html(s.outcome);
+                $('#resultTemp').find('.predOutcome').html(outcomeLabel);
                 $('#resultTemp').find('.predOutcomeLabel').html(outcomeLabel == "death" ? "die" : "have a " + outcomeLabel);
                 for(var i=0;i<s.riskGroups.length;i++){
                     var g = s.riskGroups[i];
