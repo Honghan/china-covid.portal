@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+Research • covid.datahelps.life
+
+</title>
+<meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#515675">
+<meta name="msapplication-TileColor" content="#515675">
+<meta name="msapplication-TileImage" content="/mstile-310x310.png">
+<!-- /icons -->
+
+<script src="/js/jquery.2.1.4.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+    
+      covid.datahelps.life
+    
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/prediction/">Prediction tools</a>
+  <a href="/data/">Data</a>
+  <a href="/research/">Research</a>
+</nav>
+
+  
+  
+</header>
+
+		<article>
+	<h1>Research</h1>
+		<p><strong>We are keen to collaborate on the following aspects.</strong> Please get in touch if you are interested: <a href="mailto:honghan.wu@ucl.ac.uk">honghan.wu@ucl.ac.uk</a>.</p>
+<ol>
+  <li>externally validate our models in different settings.</li>
+  <li>validate other research groups’ models in <a href="/data/">our datasets</a>.</li>
+  <li>jointly create a federated COVID-19 dataset (via a bring-model-to-data pipeline) for supporting community efforts on tackling COVID-19.</li>
+</ol>
+
+<p>Technical details of our prediction models are listed below.</p>
+
+<h2 id="prediction-models-for-death">Prediction models for ‘death’</h2>
+
+<p><em>Data in the table head are number (%). Number is the number patients with complete data of the corresponding risk group. % is the percentage of patients with the outcome.
+ Data in the table cells are coeffcient (odds ratio) or number (%).</em> 
+<em>·· indicates the corresponding predictor is not used.</em>
+<em>Initials for specifying predictor groups
+ D - Demographic
+ C - Underlying Conditions
+ S - Symptoms
+ L - Laboratory Results</em></p>
+
+<table>
+  <thead>
+    <tr>
+      <th><br />Predictor</th>
+      <th><br />DCS 30/769 (3.9%)</th>
+      <th><strong>Death</strong><br />DCSL 19/651 (2.9%)</th>
+      <th><br />DL 20/653 (3.1%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Demographic</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Age</td>
+      <td>0.0461 (0.0122:0.0799)</td>
+      <td>-0.0020 (-0.0531:0.0491)</td>
+      <td>0.0142 (-0.0370:0.0654)</td>
+    </tr>
+    <tr>
+      <td>Sex (male)</td>
+      <td>0.3177 (-0.4743:1.1097)</td>
+      <td>-0.8563 (-2.1144:0.4019)</td>
+      <td>-0.8035 (-2.0102:0.4031)</td>
+    </tr>
+    <tr>
+      <td><strong>Premorbid Conditions</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Chronic lung disease</td>
+      <td>1.0975 (0.0706:2.1243)</td>
+      <td>0.4054 (-1.3315:2.1424)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Diabetes Mellitus</td>
+      <td>0.4448 (-0.5191:1.4087)</td>
+      <td>0.3168 (-1.0493:1.6830)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Immunocompromised</td>
+      <td>1.3798 (-0.4451:3.2047)</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Malignancy</td>
+      <td>0.0185 (-1.9155:1.9526)</td>
+      <td>-0.0019 (-2.0489:2.0452)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Hypertension</td>
+      <td>0.3457 (-0.4809:1.1722)</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Heart disease</td>
+      <td>0.6761 (-0.2613:1.6135)</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Chronic renal disease</td>
+      <td>1.3210 (-0.0856:2.7276)</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td><strong>Symptoms</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Fever</td>
+      <td>··</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Cough</td>
+      <td>0.7409 (-0.3614:1.8431)</td>
+      <td>0.9446 (-0.6341:2.5233)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Fatigue</td>
+      <td>··</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Dyspnoea</td>
+      <td>1.5245 (0.5816:2.4675)</td>
+      <td>0.8559 (-0.4246:2.1365)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Diarrhoea</td>
+      <td>0.0000 (-2.1908:2.1908)</td>
+      <td>··</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td><strong>Admission clinical features</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Neutrophil count (10^9/L)</td>
+      <td>··</td>
+      <td>0.1793 (0.0294:0.3292)</td>
+      <td>0.2249 (0.0844:0.3654)</td>
+    </tr>
+    <tr>
+      <td>Lymphocyte count (10^9/L)</td>
+      <td>··</td>
+      <td>-1.4449 (-2.9297:0.0400)</td>
+      <td>-1.3255 (-2.7882:0.1372)</td>
+    </tr>
+    <tr>
+      <td>Platelet count (10^9/L)</td>
+      <td>··</td>
+      <td>-0.0059 (-0.0129:0.0011)</td>
+      <td>-0.0052 (-0.0118:0.0015)</td>
+    </tr>
+    <tr>
+      <td>C-reactive protein (mg/L)</td>
+      <td>··</td>
+      <td>0.0140 (0.0028:0.0251)</td>
+      <td>0.0138 (0.0035:0.0240)</td>
+    </tr>
+    <tr>
+      <td>Creatinine (μmol/L)</td>
+      <td>··</td>
+      <td>0.0012 (-0.0023:0.0047)</td>
+      <td>0.0015 (-0.0020:0.0049)</td>
+    </tr>
+    <tr>
+      <td><strong>Intercept</strong></td>
+      <td>-8.5016</td>
+      <td>-3.2048</td>
+      <td>-3.5172</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="prediction-models-for-poor-outcome">Prediction models for ‘poor outcome’</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th><br />Predictor</th>
+      <th><br />DCS 72/768 (9.4%)</th>
+      <th><strong>Poor outcome</strong><br />DCSL 57/651 (8.8%)</th>
+      <th><br />DL 58/653 (8.9%)</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Demographic</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Age</td>
+      <td>0.0414 (0.0187:0.0640)</td>
+      <td>0.0182 (-0.0145:0.0509)</td>
+      <td>0.0281 (-0.0004:0.0565)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sex (male)</td>
+      <td>0.2050 (-0.3270:0.7370)</td>
+      <td>-0.5136 (-1.2856:0.2583)</td>
+      <td>-0.4723 (-1.1882:0.2436)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Premorbid Conditions</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Chronic lung disease 1.2284 (0.4757:1.9812)</td>
+      <td>0.9657 (-0.2093:2.1408)</td>
+      <td>··</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Diabetes Mellitus</td>
+      <td>0.0000 (-0.6983:0.6983)</td>
+      <td>-0.2920 (-1.2810:0.6971)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Immunocompromised</td>
+      <td>1.4338 (0.0494:2.8182)</td>
+      <td>1.5738 (-0.4570:3.6045)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Malignancy</td>
+      <td>··</td>
+      <td>0.0000 (-1.3836:1.3836)</td>
+      <td>-0.7171 (-2.4933:1.0591)</td>
+      <td>··</td>
+    </tr>
+    <tr>
+      <td>Hypertension</td>
+      <td>0.6631 (0.1047:1.2215)</td>
+      <td>0.4819 (-0.3166:1.2804)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Heart disease</td>
+      <td>0.7408 (0.0745:1.4070)</td>
+      <td>0.7360 (-0.2202:1.6922)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Chronic renal disease</td>
+      <td>0.9920 (-0.1025:2.0865)</td>
+      <td>-0.3503 (-2.2309:1.5304)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Symptoms</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Fever</td>
+      <td>0.0280 (-0.5615:0.6175)</td>
+      <td>0.1678 (-0.6413:0.9769)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Cough</td>
+      <td>-0.0000 (-0.6305:0.6305)</td>
+      <td>-0.6005 (-1.4021:0.2012)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Fatigue</td>
+      <td>0.0996 (-0.4731:0.6724)</td>
+      <td>0.2024 (-0.5748:0.9796)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Dyspnoea</td>
+      <td>1.0902 (0.4967:1.6837)</td>
+      <td>1.2438 (0.4404:2.0472)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Diarrhoea</td>
+      <td>-0.2074 (-1.7452:1.3304)</td>
+      <td>-2.6571 (-8.2778:2.9636)</td>
+      <td>··</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Admission clinical features</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Neutrophil count (10^9/L)</td>
+      <td>··</td>
+      <td>0.2489 (0.1114:0.3864)</td>
+      <td>0.2575 (0.1340:0.3810)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Lymphocyte count (10^9/L)</td>
+      <td>··</td>
+      <td>-1.2256 (-2.1206:-0.3306)</td>
+      <td>-1.1842 (-1.9857:-0.3827)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Platelet count (10^9/L)</td>
+      <td>··</td>
+      <td>-0.0036 (-0.0081:0.0009)</td>
+      <td>-0.0027 (-0.0068:0.0013)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>C-reactive protein (mg/L)</td>
+      <td>··</td>
+      <td>0.0078 (-0.0020:0.0176)</td>
+      <td>0.0082 (-0.0003:0.0167)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Creatinine (μmol/L)</td>
+      <td>··</td>
+      <td>0.0125 (0.0045:0.0204)</td>
+      <td>0.0099 (0.0036:0.0161)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Intercept</strong></td>
+      <td>-6.2993</td>
+      <td>-4.2863</td>
+      <td>-4.1865</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+</article>
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-72059605-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72059605-2');
+</script>
+<footer>
+  <div class="inner">
+    <p>Insights derived from COVID-19 Datasets</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -28,15 +28,15 @@
     "alt": "value"
   },
   "valueRanges": {
-    "age": {"min": 0, "max":  100, "unit": "years", "label": "age"},
-    "curb": {"min": 0, "max":  5, "unit":  "score points", "label": "CURB-65 score"},
+    "age": {"min": 18, "max":  96, "unit": "years", "label": "age"},
+    "curb": {"min": 0, "max":  4, "unit":  "score points", "label": "CURB-65 score"},
     "days_in_disease_at_admission": {"min": 0, "max":  500, "unit":  "days", "label": "days in disease at admission"},
-    "neutrophil_1": {"min": 0, "max":  50, "unit":  "10^9/L", "label": "Neutrophil Count"},
-    "lymphocyte_1": {"min": 0, "max":  50, "unit":  "10^9/L", "label": "Lymphocyte Count"},
-    "platelet_1": {"min": 0, "max":  1000, "unit":  "10^9/L", "label": "Platelet Count (PLT)"},
-    "crp_1": {"min": 0, "max":  500, "unit":  "mg/L", "label": "C-reactive protein"},
-    "creatinine": {"min": 0, "max":  500, "unit":  "μmol/L", "label": "Creatinine"},
-    "alt": {"min": 0, "max": 1000, "unit":  "IU/L", "label": "ALT (Alanine Aminotransferase) "}
+    "neutrophil_1": {"min": 0.5, "max":  86.5, "unit":  "10^9/L", "label": "Neutrophil Count"},
+    "lymphocyte_1": {"min": 0.11, "max":  25.4, "unit":  "10^9/L", "label": "Lymphocyte Count"},
+    "platelet_1": {"min": 16, "max":  599, "unit":  "10^9/L", "label": "Platelet Count (PLT)"},
+    "crp_1": {"min": 0, "max":  278, "unit":  "mg/L", "label": "C-reactive protein"},
+    "creatinine": {"min": 0, "max":  1432, "unit":  "μmol/L", "label": "Creatinine"},
+    "alt": {"min": 4.41, "max": 1000, "unit":  "IU/L", "label": "ALT (Alanine Aminotransferase) "}
   },
   "featureGroups": {
     "Demographic": [
@@ -87,9 +87,9 @@
   },
   "models": [
     {
-      "id": "poor_prognosis_basic_lab",
-      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed",
-      "outcome": "poor outcome",
+      "id": "DL-Poor",
+      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed.",
+      "outcome": "poor outcome (acute respiratory distress syndrome \n\tOR intensive care unit admission \n\tOR intubation/mechanical ventilation \n\tOR extra-corporeal membrane oxygenation treatment \n\tOR death)",
       "description": "Predicts ‘poor outcome’ using demographic and laboratory predictors",
       "performances": "External validated - C-index: 0.72; PPV: 0.67; NPV: 0.65; Sensitivity: 0.40; Specificity: 0.85",
       "b0": -4.18647223083293,
@@ -109,9 +109,9 @@
       ]
     },
     {
-      "id": "poor_prognosis_basic_condi_symp",
+      "id": "DCS-Poor",
       "caution": "This model has not been externally validated. External validation is needed.",
-      "outcome": "poor outcome",
+      "outcome": "poor outcome (acute respiratory distress syndrome \n\tOR intensive care unit admission \n\tOR intubation/mechanical ventilation \n\tOR extra-corporeal membrane oxygenation treatment \n\tOR death)",
       "description": "Predicts ‘poor outcome’ using demographic, symptom and premorbid condition predictors",
       "performances": "Internal validated - C-index: 0.80; PPV: 0.53; NPV: 0.91; Sensitivity: 0.09; Specificity: 0.99",
       "b0": -6.299309347078160,
@@ -138,8 +138,8 @@
       ]
     },
     {
-      "id": "death_basic_lab",
-      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed",
+      "id": "DL-Death",
+      "caution": "The model based on demographic and laboratory predictors has been externally validated in a high-severity inpatient population from the UK (34.1% died, 42.9% had a poor outcome). Model performance in this very different population was only moderate to good. External validation in other datasets is needed.",
       "outcome": "death",
       "description": "Predicts ‘death’ using demographic and laboratory predictors",
       "performances": "",
@@ -154,13 +154,13 @@
         "creatinine": 0.0014728045166590600
       },
       "risk_groups": [
-        {"prob": 0.02993437521, "risk_ratio":  0.00625},
-        {"prob": 0.2750778385, "risk_ratio":  0.08928571429},
-        {"prob": 1, "risk_ratio":  0.5849056604}
+        {"prob": 0.03867621441, "risk_ratio":  0.003448275862},
+        {"prob": 0.06934078742, "risk_ratio":  0.15},
+        {"prob": 1, "risk_ratio":  0.2830188679}
       ]
     },
     {
-      "id": "death_basic_condi_symp",
+      "id": "DCS-Death",
       "caution": "This model has not been externally validated. External validation is needed.",
       "outcome": "death",
       "description": "Predicts ‘death’ using demographic, symptom and premorbid condition predictors",
@@ -181,9 +181,9 @@
         "diarrhea": 6.13889851605158E-17
       },
       "risk_groups": [
-        {"prob": 0.05913713556, "risk_ratio":  0.0075},
-        {"prob": 0.3889423147, "risk_ratio":  0.1470588235},
-        {"prob": 1, "risk_ratio":  0.6785714286}
+        {"prob": 0.01625640047, "risk_ratio":  0.002631578947},
+        {"prob": 0.2064327419, "risk_ratio":  0.05555555556},
+        {"prob": 1, "risk_ratio":  0.3103448276}
       ]
     }
   ]

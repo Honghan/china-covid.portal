@@ -67,6 +67,7 @@ header::after {
   <a href="/about/">About</a>
   <a href="/prediction/">Prediction tools</a>
   <a href="/data/">Data</a>
+  <a href="/research/">Research</a>
 </nav>
 
   
@@ -84,18 +85,19 @@ header::after {
         var r = {"validated": true, "value": 0, "msg": ""}
         if (f in dsModels.valueRanges){
             var vr = dsModels.valueRanges[f];
+            var label = vr.label;
             if (v.length == 0){
                 if ("default" in vr){
                     r.msg = "";
                     r.validated = true;
                 }else{
-                    r.msg = "please input value for "+ f;
+                    r.msg = "please input value for "+ label;
                     r.validated = false;
                 }
             }else{
                 var val = parseFloat(v);
                 if(val < vr.min || val > vr.max){
-                    r.msg = "value of " + f + " is out of range!";
+                    r.msg = label + " needs to be within [" + vr.min + ", " + vr.max + "]";
                     r.validated = false;
                 }
             }
@@ -143,13 +145,17 @@ header::after {
             if ("riskGroups" in s){
                 var groupLabels = ["Low risk", "High risk", "Very high risk"];
                 var predGroupIdx = -1;
+                var outcomeLabel = s.outcome;
+                if (s.outcome != "death")
+                    outcomeLabel = "poor outcome";
                 $('#resultTemp').find('.predOutcome').html(s.outcome);
-                $('#resultTemp').find('.predOutcomeLabel').html(s.outcome == "death" ? "die" : "have a " + s.outcome);
+                $('#resultTemp').find('.predOutcomeLabel').html(outcomeLabel == "death" ? "die" : "have a " + s.outcome);
                 for(var i=0;i<s.riskGroups.length;i++){
                     var g = s.riskGroups[i];
                     if (predGroupIdx == -1 && s.prob <= g["prob"]){
                         $('#resultTemp').find('.predGroup').html(groupLabels[i]);
-                        $('#resultTemp').find('.predGroupPercent').html((g["risk_ratio"] * 100).toFixed(1));
+                        var pred = (s.prob * 100).toFixed(0);
+                        $('#resultTemp').find('.predGroupPercent').html(pred == 0 ? "<1" : pred);
                         predGroupIdx = i;
                     }
                     $('#resultTemp').find('.predGroup' + i).html((g["risk_ratio"] * 100).toFixed(1));
@@ -269,7 +275,7 @@ header::after {
 <div class="modelTitle">COVID-19 prediction models derived from <a href="/data/Wuhan">data:Wuhan</a></div>
 <div class="desc">
 The models are derived in a population of 775 people with confirmed COVID-19 admitted to one of two hospitals in Wuhan, China.
-The population is a low to moderate severity population 4.3% died and 9.7% had a ‘poor outcome’ defined as acute respiratory
+The population is a low to moderate severity population (4.3% died and 9.7% had a ‘poor outcome’ defined as acute respiratory
 distress syndrome, intensive care unit admission, mechanical ventilation, extra-corporeal membrane oxygenation therapy or death).
 The models perform well in the original population.
 </div>
@@ -296,13 +302,13 @@ The models perform well in the original population.
     <input type="button" value="Calculate" id="btnCal">
     <div class="predictionResult"></div>
     <div style="display: none" id="resultTemp">
-        <span class="predGroupPercent"></span>% of patients with these characteristics are predicted to <span class="predOutcomeLabel"></span>.
+        <span class="predGroupPercent"></span>% of patients <b>with these characteristics</b> are predicted to <span class="predOutcomeLabel"></span>.
         <div class="explainText">
         Based on the Wuhan derivation data, this patient would be categorised as <span class="predGroup"></span>. Interpret this with CAUTION – validity in other contexts has not been established.
         <ol>
-            <li>Low risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup0"></span>%)</li>
-            <li>High risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup1"></span>%)</li>
-            <li>Very high risk (estimated <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup2"></span>%)</li>
+            <li>Low risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup0"></span>%)</li>
+            <li>High risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup1"></span>%)</li>
+            <li>Very high risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup2"></span>%)</li>
         </ol>
         </div>
     </div>
