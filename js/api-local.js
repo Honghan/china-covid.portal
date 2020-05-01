@@ -15,7 +15,7 @@ if (typeof qbb == "undefined"){
 				if (qbb.inf.localModels != null){
 					cb(qbb.inf.localModels);
 				}else{
-					$.getJSON( "/data/sampleDSModels.json?v=1.2", function(obj) {
+					$.getJSON( "/data/sampleDSModels.json?v=1.21", function(obj) {
 						qbb.inf.localModels = obj;
 						cb(obj);
 					});
