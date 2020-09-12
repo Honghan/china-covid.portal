@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width">
 <title>
 
-COVID-19 Prediction • covid.datahelps.life
+COVID-19 Prediction Tools • covid.datahelps.life
 
 </title>
 <meta name="description" content=" Derive insights from covid-19 datasets for saving lives">
@@ -75,256 +75,28 @@ header::after {
 </header>
 
 		<article>
-	<h1>COVID-19 Prediction</h1>
-		<script src="/js/api-local.js?v=1.22"></script>
-<script src="/js/libs/jquery.json-2.3.js"></script>
-<script>
-    var dsName = 'sampleDSModels';
-
-    function validateFeatureValue(f, v){
-        var r = {"validated": true, "value": 0, "msg": ""}
-        if (f in dsModels.valueRanges){
-            var vr = dsModels.valueRanges[f];
-            var label = vr.label;
-            if (v.length == 0){
-                if ("default" in vr){
-                    r.msg = "";
-                    r.validated = true;
-                }else{
-                    r.msg = "please input value for "+ label;
-                    r.validated = false;
-                }
-            }else{
-                var val = parseFloat(v);
-                if(val < vr.min || val > vr.max){
-                    r.msg = label + " needs to be within [" + vr.min + ", " + vr.max + "]";
-                    r.validated = false;
-                }
-            }
-        }
-        return r;
-    }
-
-    function cal() {
-        $('.predictionResult').html('');
-        $('.predictionResult').removeClass('predicted');
-        if ($("input[name='age']").val().trim() == "" || parseInt($("input[name='age']").val()) > 150 || parseInt($("input[name='age']").val()) < 0){
-            alert("Please input correct age ([0-150]!");
-            return false;
-        }
-        var modelId = $('#modelList').val();
-        var m = id2model[modelId];
-        var caseDetails = {};
-        var countingFeatures = [];
-        for(var f in m.b1){
-            if (("countedFeatures" in dsModels) && f in dsModels['countedFeatures']){
-                countingFeatures.push(f);
-                continue;
-            }
-            if (dsModels.fullFeatureSet[f] == 'value'){
-                caseDetails[f] = $("input[name='" + f + "']").val();
-                var validRet = validateFeatureValue(f, caseDetails[f]);
-                if (!validRet.validated){
-                    alert(validRet.msg);
-                    return;
-                }
-            }else if (dsModels.fullFeatureSet[f] == 'binary'){
-                caseDetails[f] = "" + ($('#' + f).is(":checked")? 1 : 0);
-            }
-        }
-        for(var j=0; j < countingFeatures.length; j++){
-            var cf = countingFeatures[j];
-            var counted = 0;
-            for(var i=0;i<dsModels['countedFeatures'][cf];i++){
-                counted += caseDetails[dsModels['countedFeatures'][cf][i]];
-            }
-            caseDetails[cf] = "" + counted;
-        }
-        console.log(caseDetails);
-        qbb.inf.predict(dsName, modelId, $.toJSON(caseDetails), function (s) {
-            if ("riskGroups" in s){
-                var groupLabels = ["Low risk", "High risk", "Very high risk"];
-                var predGroupIdx = -1;
-                var outcomeLabel = s.outcome;
-                if (s.outcome != "death")
-                    outcomeLabel = "poor outcome";
-                $('#resultTemp').find('.predOutcome').html(outcomeLabel);
-                $('#resultTemp').find('.predOutcomeLabel').html(outcomeLabel == "death" ? "die" : "have a " + outcomeLabel);
-                for(var i=0;i<s.riskGroups.length;i++){
-                    var g = s.riskGroups[i];
-                    if (predGroupIdx == -1 && s.prob <= g["prob"]){
-                        $('#resultTemp').find('.predGroup').html(groupLabels[i]);
-                        var pred = (s.prob * 100).toFixed(0);
-                        $('#resultTemp').find('.predGroupPercent').html(pred == 0 ? "<1" : pred);
-                        predGroupIdx = i;
-                    }
-                    $('#resultTemp').find('.predGroup' + i).html((g["risk_ratio"] * 100).toFixed(1));
-                }
-                $('.predictionResult').html($('#resultTemp').html());
-            }else{
-                $('.predictionResult').html('prediction error: [' + s + ']');
-            }
-
-            $('.predictionResult').addClass('predicted');
-            $('html, body').animate({
-                scrollTop: ($('.predictionResult').offset().top)
-            },500)
-        });
-    }
-
-    var dsModels = null;
-    var id2model = {};
-    function renderModelList(){
-        for(var i=0;i<dsModels.models.length;i++){
-            var m = dsModels.models[i];
-            var opt = document.createElement('option');
-            opt.value = m.id;
-            opt.text =  m.description;
-            $('#modelList').append(opt);
-            id2model[m.id] = m;
-        }
-        renderModel($('#modelList').val());
-    }
-
-    function renderFeature(feature){
-        if (feature in dsModels.fullFeatureSet){
-            var ft = dsModels.fullFeatureSet[feature];
-            if (ft == "binary"){
-                return '<input type="checkbox" name="' + feature + '" id="' + feature + '"/> <label for="' + feature + '">' + feature + '</label>';
-            }else if(ft == "value"){
-                var label = feature;
-                var placeHolder = "";
-                if (feature in dsModels.valueRanges){
-                    if (("label" in dsModels.valueRanges[feature]) && dsModels.valueRanges[feature]["label"] != null)
-                        label = dsModels.valueRanges[feature]["label"];
-                    if ("unit" in dsModels.valueRanges[feature])
-                        label += " (" + dsModels.valueRanges[feature]["unit"] + ")";
-                    placeHolder = "[" + dsModels.valueRanges[feature]['min'] + " - " + dsModels.valueRanges[feature]['max'] + "]";
-                }
-                return '<label class="valueLabel">' + label + '</label> <input type="number" name="' + feature + '" placeholder="' + placeHolder + '"/>';
-            }
-        }
-    }
-
-    function renderModel(modelId){
-        $('.predictionResult').html('');
-        $('.predictionResult').removeClass('predicted');
-        if (modelId == "-"){
-            $('#modelContainer').hide();
-            return;
-        }
-        if (modelId in id2model){
-            var m = id2model[modelId];
-            if (m.caution.length > 0){
-                $('#modelContainer').find('.caution').html('CAUTION: ' + m.caution).show();
-            }else{
-                $('#modelContainer').find('.caution').hide();
-            }
-
-            //code snip
-            var codeSnip = "\nModel ID: " + m.id + "\n";
-            codeSnip += "Predicted outcome: " + m.outcome + "\n";
-            // codeSnip += "Performances: " + m.performances;
-            console.log(codeSnip);
-            $('#codeSnip').html(codeSnip);
-
-            //generate feature groups
-            var s = '';
-            for(var g in dsModels.featureGroups){
-                var gs = [];
-                for(var i=0;i<dsModels.featureGroups[g].length;i++){
-                    var feature = dsModels.featureGroups[g][i];
-                    if (feature in m.b1){
-                        var fInput = renderFeature(feature);
-                        if (fInput)
-                            gs.push(fInput);
-                    }
-                }
-                if (gs.length > 0){
-                    s += '<div class="sect">' + g + '</div>';
-                    s += gs.join("<br/>");
-                }
-            }
-            $('#dataFrm').html(s);
-
-            $("input").change(function() {
-                $('.predictionResult').html('');
-                $('.predictionResult').removeClass('predicted');
-            });
-
-            $('#modelContainer').show();
-        }
-    }
-
-    $( document ).ready(function() {
-        $('#btnCal').click(function () {
-            cal();
-        });
-
-        qbb.inf.getModelList(dsName, function(s){
-            dsModels = Object.prototype.toString.call(s) == '[object String]'  ? $.parseJSON(s) : s;
-            console.log(dsModels);
-            renderModelList();
-        });
-
-        $('#modelList').change(function(){
-            renderModel($('#modelList').val());
-        });
-    });
-</script>
-<div class="modelTitle">COVID-19 prediction models derived from <a href="/data/Wuhan">data:Wuhan</a> and
-    described in <a href="https://www.medrxiv.org/content/10.1101/2020.04.28.20082222v1" target="_blank">Medrxiv preprint</a>.</div>
-<div class="desc">
-The models are derived in a population of 775 people with confirmed COVID-19 admitted to one of two hospitals in Wuhan, China.
-The population is a low to moderate severity population (4.3% died and 9.7% had a ‘poor outcome’ defined as acute respiratory
-distress syndrome, intensive care unit admission, mechanical ventilation, extra-corporeal membrane oxygenation therapy or death).
-The models perform well in the original population.
-</div>
-
-<div class="desc">
-    Our prediction models are supposed to support decision making at different points of the health care pathway.
-    <ul>
-        <li>Community triage: Models using Demographic, premorbid Conditions and Symptoms (DCS).
-            <i>The model of death prediction using DCS is NOT listed below as it's not validated very well internally.</i>
-        </li>
-        <li>Hospital admission: Models using Demographic and Laboratory results (DL).</li>
-    </ul>
-</div>
-
-<div class="caution">
-    NB: Risk prediction models are only ever a complement to clinical judgement. They are not a replacement.
-</div>
-
-<h3>Step 1:choose your model</h3>
-<select id="modelList"><option value="-">select a model</option></select>
-
-<div id="modelContainer">
-    <h3>Step 2:enter patient values</h3>
-    <div class="caution"></div>
-    <figure class="highlight">
-        <pre>
-            <code class="language-python" data-lang="python" id="codeSnip">
-            </code>
-        </pre>
-    </figure>
-    <form onsubmit="return cal()" id="dataFrm">
-    </form>
-
-    <input type="button" value="Calculate" id="btnCal">
-    <div class="predictionResult"></div>
-    <div style="display: none" id="resultTemp">
-        <span class="predGroupPercent"></span>% of patients <b>with these characteristics</b> are predicted to <span class="predOutcomeLabel"></span>.
-        <div class="explainText">
-        Based on the Wuhan derivation data, this patient would be categorised as <span class="predGroup"></span>. Interpret this with CAUTION – validity in other contexts has not been established.
-        <ol>
-            <li>Low risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup0"></span>%)</li>
-            <li>High risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup1"></span>%)</li>
-            <li>Very high risk (estimated average <span class="predOutcome"></span> rate in the derivation data was <span class="predGroup2"></span>%)</li>
-        </ol>
-        </div>
-    </div>
-</div>
-
+	<h1>COVID-19 Prediction Tools</h1>
+		<table>
+  <thead>
+    <tr>
+      <th>models</th>
+      <th>description</th>
+      <th>links</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ensemble Learning for COVID-19</td>
+      <td>ensemble learning to synergise seven multinational prediction models</td>
+      <td><a href="http://doi.org/10.13140/RG.2.2.15484.97927">Preprint</a>, <a href="https://github.com/Honghan/EnsemblePrediction">Repo</a></td>
+    </tr>
+    <tr>
+      <td><a href="/wuhan01-model/">Wuhan01-model</a></td>
+      <td>Logistic regression model learnt from <a href="/data/Wuhan">Data/Wuhan</a></td>
+      <td><a href="https://www.medrxiv.org/content/10.1101/2020.04.28.20082222v1">Preprint</a>, <a href="https://github.com/huayu-zhang/COVID-19-Risk">Repo</a></td>
+    </tr>
+  </tbody>
+</table>
 
 
 </article>
